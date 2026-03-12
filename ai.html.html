@@ -1,0 +1,886 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teerthlok AI Assistant - Multilingual Support</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #0a4d68;
+            --secondary: #088395;
+            --accent: #05bfdb;
+            --light: #e8f9fd;
+            --dark: #1a1a2e;
+            --gold: #ffd700;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a4d68, #1a1a2e);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Parallax Background */
+        .parallax-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
+            background-size: cover;
+            opacity: 0.4;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 77, 104, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            background: linear-gradient(to right, var(--gold), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 30px;
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+            position: relative;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1.5s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 2s ease;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 50px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: 0.4s;
+        }
+
+        .feature-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            position: relative;
+            display: inline-block;
+            color: var(--accent);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        /* Language Selector */
+        .language-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .language-btn {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .language-btn:hover, .language-btn.active {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        /* Chat Container */
+        .chat-container {
+            height: 400px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            overflow-y: auto;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .user-message {
+            background: var(--accent);
+            color: var(--dark);
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai-message {
+            background: rgba(255, 255, 255, 0.15);
+            border-bottom-left-radius: 5px;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 25px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+        }
+
+        .chat-input input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .chat-input button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent);
+            color: var(--dark);
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-input button:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        /* Voice Controls */
+        .voice-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .voice-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent);
+            color: var(--dark);
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .voice-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .voice-btn.listening {
+            animation: pulse 1.5s infinite;
+            background: #ff4d4d;
+        }
+
+        /* Image Detection */
+        .image-upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .image-upload-area:hover {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 50px;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .detection-result {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 50px 5% 20px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+            
+            .main-content {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .message {
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Parallax Background -->
+    <div class="parallax-bg"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-mountain"></i>
+            <h1>Teerthlok AI</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#" class="active">AI Talk</a></li>
+                <li><a href="VR.HTML">VR Experiences</a></li>
+               <li><a href="Lok Katha.html">Lok Katha</a></li>
+                 <li><a href="Dashboard.html">Favourites</a></li>
+                  <li><a href="about.html">About</a></li>
+
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h2>Teerthlok AI Assistant</h2>
+        <p>Your multilingual companion for exploring Uttarakhand with voice, text, and image recognition capabilities.</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- AI Conversation Section -->
+        <section class="feature-section">
+            <h2 class="section-title">AI Conversation</h2>
+            <p>Chat with our AI assistant in any language about Uttarakhand destinations, culture, and travel tips.</p>
+            
+            <div class="language-selector">
+                <button class="language-btn active" data-lang="en">English</button>
+                <button class="language-btn" data-lang="hi">हिन्दी</button>
+                <button class="language-btn" data-lang="bn">বাংলা</button>
+                <button class="language-btn" data-lang="ta">தமிழ்</button>
+                <button class="language-btn" data-lang="te">తెలుగు</button>
+                <button class="language-btn" data-lang="mr">मराठी</button>
+                <button class="language-btn" data-lang="gu">ગુજરાતી</button>
+                <button class="language-btn" data-lang="pa">ਪੰਜਾਬੀ</button>
+            </div>
+            
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai-message">
+                        <p>Namaste! I'm your Teerthlok AI assistant. How can I help you explore Uttarakhand today?</p>
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Ask about destinations, culture, or travel tips...">
+                    <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+            
+            <div class="voice-controls">
+                <button class="voice-btn" id="voiceInput">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="voice-btn" id="voiceOutput">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Image Detection Section -->
+        <section class="feature-section">
+            <h2 class="section-title">Image Detection</h2>
+            <p>Upload or capture an image of any Uttarakhand location to get detailed information in your preferred language.</p>
+            
+            <div class="language-selector">
+                <button class="language-btn active" data-lang="en">English</button>
+                <button class="language-btn" data-lang="hi">हिन्दी</button>
+                <button class="language-btn" data-lang="bn">বাংলা</button>
+                <button class="language-btn" data-lang="ta">தமிழ்</button>
+            </div>
+            
+            <div class="image-upload-area" id="imageUploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Upload or Click an Image</h3>
+                <p>Drag & drop or click to select an image file</p>
+                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                <button id="cameraBtn" style="margin-top: 15px; padding: 10px 20px; background: var(--accent); color: var(--dark); border: none; border-radius: 25px; cursor: pointer;">
+                    <i class="fas fa-camera"></i> Use Camera
+                </button>
+            </div>
+            
+            <img id="imagePreview" class="image-preview" alt="Preview">
+            
+            <div class="detection-result" id="detectionResult">
+                <h3>Detection Result</h3>
+                <div id="resultContent"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Teerthlok AI</h3>
+                <p>Your intelligent companion for exploring Uttarakhand with cutting-edge AI technology.</p>
+            </div>
+            <div class="footer-column">
+                <h3>AI Features</h3>
+                <ul>
+                    <li><a href="#">Multilingual Chat</a></li>
+                    <li><a href="#">Voice Assistant</a></li>
+                    <li><a href="#">Image Recognition</a></li>
+                    <li><a href="#">Trip Planning</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Language Guide</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Feedback</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-envelope"></i> ai@teerthlok.com</a></li>
+                    <li><a href="#"><i class="fas fa-phone"></i> +91 9876543210</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Dehradun, Uttarakhand</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Teerthlok AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Language Selection
+            const languageBtns = document.querySelectorAll('.language-btn');
+            languageBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons in the same container
+                    const container = this.closest('.language-selector');
+                    container.querySelectorAll('.language-btn').forEach(b => b.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Show language change message in chat
+                    if (this.closest('.feature-section').querySelector('#chatMessages')) {
+                        addMessage(`Language changed to ${this.textContent}`, 'ai');
+                    }
+                });
+            });
+            
+            // Chat Functionality
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const sendMessageBtn = document.getElementById('sendMessage');
+            
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'ai-message');
+                
+                const messageText = document.createElement('p');
+                messageText.textContent = text;
+                
+                messageDiv.appendChild(messageText);
+                chatMessages.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message) {
+                    addMessage(message, 'user');
+                    chatInput.value = '';
+                    
+                    // Simulate AI response after a short delay
+                    setTimeout(() => {
+                        const responses = [
+                            "That's a great question about Uttarakhand! Let me tell you more about that destination.",
+                            "I have detailed information about that place in Uttarakhand. Would you like to know about the best time to visit?",
+                            "Based on your interests, I can recommend some similar destinations in Uttarakhand you might enjoy.",
+                            "That location has rich cultural significance. Let me share some interesting facts about it.",
+                            "I can help you plan a trip to that destination. Would you like information about accommodations and transportation?"
+                        ];
+                        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                        addMessage(randomResponse, 'ai');
+                    }, 1000);
+                }
+            }
+            
+            sendMessageBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Voice Input Functionality
+            const voiceInputBtn = document.getElementById('voiceInput');
+            let isListening = false;
+            let recognition;
+            
+            // Check if browser supports Web Speech API
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                
+                recognition.onstart = function() {
+                    isListening = true;
+                    voiceInputBtn.classList.add('listening');
+                };
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    chatInput.value = transcript;
+                    sendMessage();
+                };
+                
+                recognition.onend = function() {
+                    isListening = false;
+                    voiceInputBtn.classList.remove('listening');
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error', event.error);
+                    isListening = false;
+                    voiceInputBtn.classList.remove('listening');
+                    addMessage("Sorry, I couldn't understand that. Please try again.", 'ai');
+                };
+            } else {
+                voiceInputBtn.disabled = true;
+                voiceInputBtn.title = "Speech recognition not supported in your browser";
+            }
+            
+            voiceInputBtn.addEventListener('click', function() {
+                if (!isListening) {
+                    recognition.start();
+                } else {
+                    recognition.stop();
+                }
+            });
+            
+            // Voice Output Functionality
+            const voiceOutputBtn = document.getElementById('voiceOutput');
+            
+            voiceOutputBtn.addEventListener('click', function() {
+                const messages = chatMessages.querySelectorAll('.ai-message');
+                if (messages.length > 0) {
+                    const lastMessage = messages[messages.length - 1].textContent;
+                    
+                    // Use Web Speech API for speech synthesis
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(lastMessage);
+                        
+                        // Set language based on selected language
+                        const activeLang = document.querySelector('.language-selector .language-btn.active').getAttribute('data-lang');
+                        utterance.lang = activeLang === 'hi' ? 'hi-IN' : 
+                                         activeLang === 'bn' ? 'bn-IN' : 
+                                         activeLang === 'ta' ? 'ta-IN' : 
+                                         activeLang === 'te' ? 'te-IN' : 
+                                         activeLang === 'mr' ? 'mr-IN' : 
+                                         activeLang === 'gu' ? 'gu-IN' : 
+                                         activeLang === 'pa' ? 'pa-IN' : 'en-US';
+                        
+                        speechSynthesis.speak(utterance);
+                    } else {
+                        alert("Speech synthesis not supported in your browser");
+                    }
+                }
+            });
+            
+            // Image Upload Functionality
+            const imageUploadArea = document.getElementById('imageUploadArea');
+            const imageInput = document.getElementById('imageInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const detectionResult = document.getElementById('detectionResult');
+            const resultContent = document.getElementById('resultContent');
+            const cameraBtn = document.getElementById('cameraBtn');
+            
+            imageUploadArea.addEventListener('click', function() {
+                imageInput.click();
+            });
+            
+            imageInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        imagePreview.src = event.target.result;
+                        imagePreview.style.display = 'block';
+                        
+                        // Simulate image detection after a short delay
+                        setTimeout(() => {
+                            detectImage();
+                        }, 1500);
+                    };
+                    
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            
+            // Camera functionality
+            cameraBtn.addEventListener('click', function() {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ video: true })
+                        .then(function(stream) {
+                            // Create a video element to capture the image
+                            const video = document.createElement('video');
+                            video.srcObject = stream;
+                            video.play();
+                            
+                            // Create a canvas to capture the image
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+                            
+                            // When video is playing, capture image
+                            video.addEventListener('playing', function() {
+                                setTimeout(() => {
+                                    canvas.width = video.videoWidth;
+                                    canvas.height = video.videoHeight;
+                                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                                    
+                                    // Convert canvas to data URL and set as preview
+                                    imagePreview.src = canvas.toDataURL('image/png');
+                                    imagePreview.style.display = 'block';
+                                    
+                                    // Stop the video stream
+                                    stream.getTracks().forEach(track => track.stop());
+                                    
+                                    // Simulate image detection after a short delay
+                                    setTimeout(() => {
+                                        detectImage();
+                                    }, 1500);
+                                }, 1000);
+                            });
+                        })
+                        .catch(function(error) {
+                            console.error('Camera error:', error);
+                            alert('Could not access camera. Please check permissions.');
+                        });
+                } else {
+                    alert('Camera access not supported in your browser');
+                }
+            });
+            
+            // Drag and drop functionality
+            imageUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                imageUploadArea.style.borderColor = 'var(--accent)';
+                imageUploadArea.style.background = 'rgba(255, 255, 255, 0.1)';
+            });
+            
+            imageUploadArea.addEventListener('dragleave', function() {
+                imageUploadArea.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                imageUploadArea.style.background = 'transparent';
+            });
+            
+            imageUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                imageUploadArea.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                imageUploadArea.style.background = 'transparent';
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    imageInput.files = e.dataTransfer.files;
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        imagePreview.src = event.target.result;
+                        imagePreview.style.display = 'block';
+                        
+                        // Simulate image detection after a short delay
+                        setTimeout(() => {
+                            detectImage();
+                        }, 1500);
+                    };
+                    
+                    reader.readAsDataURL(e.dataTransfer.files[0]);
+                }
+            });
+            
+            // Simulate image detection
+            function detectImage() {
+                detectionResult.style.display = 'block';
+                
+                // Sample detection results for different languages
+                const activeLang = document.querySelector('.feature-section:last-child .language-btn.active').getAttribute('data-lang');
+                
+                const results = {
+                    en: {
+                        title: "Kedarnath Temple",
+                        content: "<p><strong>Location:</strong> Rudraprayag District, Uttarakhand</p><p><strong>Altitude:</strong> 3,583 meters (11,755 ft)</p><p><strong>Significance:</strong> One of the twelve Jyotirlingas of Lord Shiva and part of the Char Dham pilgrimage circuit.</p><p><strong>Best Time to Visit:</strong> May to June and September to October</p><p>The temple is surrounded by majestic snow-capped peaks and offers a spiritually uplifting experience. It was rebuilt after the 2013 floods and remains a testament to faith and resilience.</p>"
+                    },
+                    hi: {
+                        title: "केदारनाथ मंदिर",
+                        content: "<p><strong>स्थान:</strong> रुद्रप्रयाग जिला, उत्तराखंड</p><p><strong>ऊंचाई:</strong> 3,583 मीटर (11,755 फीट)</p><p><strong>महत्व:</strong> भगवान शिव के बारह ज्योतिर्लिंगों में से एक और चार धाम तीर्थयात्रा सर्किट का हिस्सा।</p><p><strong>यात्रा का सर्वोत्तम समय:</strong> मई से जून और सितंबर से अक्टूबर</p><p>मंदिर शानदार बर्फ से ढके पहाड़ों से घिरा हुआ है और एक आध्यात्मिक रूप से उत्थानकारी अनुभव प्रदान करता है। यह 2013 की बाढ़ के बाद पुनर्निर्मित किया गया था और विश्वास और लचीलेपन का प्रमाण बना हुआ है।</p>"
+                    },
+                    bn: {
+                        title: "কেদারনাথ মন্দির",
+                        content: "<p><strong>অবস্থান:</strong> রুদ্রপ্রয়াগ জেলা, উত্তরাখণ্ড</p><p><strong>উচ্চতা:</strong> ৩,৫৮৩ মিটার (১১,৭৫৫ ফুট)</p><p><strong>গুরুত্ব:</strong> ভগবান শিবের বারোটি জ্যোতির্লিঙ্গের মধ্যে একটি এবং চার ধাম তীর্থযাত্রা সার্কিটের অংশ।</p><p><strong>ভ্রমণের সেরা সময়:</strong> মে থেকে জুন এবং সেপ্টেম্বর থেকে অক্টোবর</p><p>মন্দিরটি চমত্কার বরফে ঢাকা পর্বতশ্রেণী দ্বারা বেষ্টিত এবং একটি আধ্যাত্মিকভাবে উন্নত অভিজ্ঞতা প্রদান করে। ২০১৩ সালের বন্যার পরে এটি পুনর্নির্মাণ করা হয়েছিল এবং বিশ্বাস ও সহনশীলতার প্রমাণ হিসাবে রয়ে গেছে।</p>"
+                    },
+                    ta: {
+                        title: "கேதார்நாத் கோவில்",
+                        content: "<p><strong>இடம்:</strong> ருத்ரப்பிரயாக் மாவட்டம், உத்தராகண்டம்</p><p><strong>உயரம்:</strong> 3,583 மீட்டர் (11,755 அடி)</p><p><strong>முக்கியத்துவம்:</strong> சிவபெருமானின் பன்னிரண்டு ஜோதிர்லிங்கங்களில் ஒன்று மற்றும் சார் தாம் யாத்திரை சுற்றுவட்டத்தின் ஒரு பகுதி.</p><p><strong>பயணத்திற்கான சிறந்த நேரம்:</strong> மே முதல் ஜூன் மற்றும் செப்டம்பர் முதல் அக்டோபர் வரை</p><p>இந்த கோவில் கம்பீரமான பனி மூடிய மலைகளால் சூழப்பட்டுள்ளது மற்றும் ஒரு ஆன்மீகமாக உயர்த்தும் அனுபவத்தை வழங்குகிறது. இது 2013 வெள்ளத்திற்குப் பிறகு மீண்டும் கட்டப்பட்டது மற்றும் நம்பிக்கை மற்றும் நெகிழ்வுத்தன்மைக்கு சான்றாக உள்ளது.</p>"
+                    }
+                };
+                
+                const result = results[activeLang] || results['en'];
+                resultContent.innerHTML = `<h4>${result.title}</h4>${result.content}`;
+                
+                // Add animation
+                detectionResult.style.animation = 'none';
+                setTimeout(() => {
+                    detectionResult.style.animation = 'fadeIn 0.5s ease';
+                }, 10);
+            }
+        });
+    </script>
+</body>
+</html>

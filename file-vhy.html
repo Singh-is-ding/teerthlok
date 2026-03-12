@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Teerth Smart Navigator</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+    crossorigin=""/>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+    crossorigin=""></script>
+  <!-- Routing -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css"/>
+  <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      font-family: 'Poppins', sans-serif; 
+    }
+    
+    html, body { 
+      height: 100%; 
+      width: 100%; 
+      overflow: hidden; 
+    }
+    
+    body { 
+      display: flex; 
+      flex-direction: column; 
+      background: linear-gradient(135deg, #667eea, #764ba2); 
+    }
+    
+    header { 
+      background: linear-gradient(135deg, #1e3c72, #2a5298); 
+      color: #fff; 
+      text-align: center; 
+      padding: 15px; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+    
+    header h1 { 
+      font-size: 1.8em; 
+      margin-bottom: 3px; 
+    }
+    
+    header p { 
+      font-size: 0.85em; 
+      opacity: 0.9; 
+    }
+    
+    main { 
+      flex: 1; 
+      display: flex; 
+      background: #f5f7fa;
+      overflow: hidden;
+      height: calc(100vh - 100px);
+    }
+    
+    aside { 
+      width: 360px; 
+      background: #fff; 
+      padding: 15px; 
+      overflow-y: auto; 
+      border-right: 3px solid #667eea;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+    
+    aside::-webkit-scrollbar { 
+      width: 8px; 
+    }
+    
+    aside::-webkit-scrollbar-thumb { 
+      background: #667eea; 
+      border-radius: 4px; 
+    }
+    
+    aside h2 { 
+      color: #1e3c72; 
+      margin-bottom: 10px; 
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+      font-size: 1.2em; 
+    }
+    
+    button { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      background: linear-gradient(135deg, #667eea, #764ba2); 
+      border: none; 
+      color: #fff; 
+      padding: 10px 15px; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      transition: 0.3s; 
+      font-weight: 500; 
+      box-shadow: 0 2px 8px rgba(102,126,234,0.4); 
+    }
+    
+    button:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 4px 12px rgba(102,126,234,0.6); 
+    }
+    
+    button:active { 
+      transform: translateY(0); 
+    }
+    
+    .control-group { 
+      display: flex; 
+      gap: 10px; 
+      margin-bottom: 10px; 
+    }
+    
+    .control-group button { 
+      flex: 1; 
+    }
+    
+    input { 
+      width: 100%; 
+      padding: 10px; 
+      margin-bottom: 10px; 
+      border: 2px solid #e0e0e0; 
+      border-radius: 8px; 
+      font-size: 0.9em; 
+      transition: 0.3s; 
+    }
+    
+    input:focus { 
+      border-color: #667eea; 
+      outline: none; 
+    }
+    
+    .category { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 8px; 
+      margin-bottom: 10px; 
+    }
+    
+    .category button { 
+      flex-direction: column; 
+      background: linear-gradient(135deg, #00c6ff, #0072ff); 
+      padding: 12px 8px; 
+    }
+    
+    .category button i { 
+      font-size: 1.5em; 
+      margin-bottom: 4px; 
+    }
+    
+    .category button span { 
+      font-size: 0.85em; 
+    }
+    
+    #map { 
+      flex: 1; 
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    
+    #results { 
+      margin-top: 15px; 
+      max-height: 300px; 
+      overflow-y: auto; 
+    }
+    
+    .result-item { 
+      background: #fff; 
+      padding: 12px; 
+      margin-bottom: 8px; 
+      border: 2px solid #e0e0e0; 
+      border-radius: 8px; 
+      transition: 0.2s; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
+    }
+    
+    .result-item:hover { 
+      background: #f0f8ff; 
+      border-color: #667eea; 
+      transform: translateX(5px); 
+    }
+    
+    .result-item.nearest { 
+      background: linear-gradient(135deg, #d4edda, #c3e6cb); 
+      border-color: #28a745; 
+    }
+    
+    .result-item h4 { 
+      color: #1e3c72; 
+      margin-bottom: 6px; 
+      display: flex; 
+      align-items: center; 
+      gap: 6px; 
+      font-size: 1em;
+    }
+    
+    .result-item p { 
+      font-size: 0.85em; 
+      color: #666; 
+      margin: 4px 0; 
+    }
+    
+    .nearest-info { 
+      background: linear-gradient(135deg, #d4edda, #c3e6cb); 
+      padding: 12px; 
+      border: 2px solid #28a745; 
+      border-radius: 8px; 
+      margin-bottom: 10px; 
+      display: none; 
+      box-shadow: 0 3px 10px rgba(40,167,69,0.3); 
+    }
+    
+    .nearest-info h3 { 
+      color: #155724; 
+      font-size: 1.1em; 
+      margin-bottom: 8px; 
+      display: flex; 
+      align-items: center; 
+      gap: 6px; 
+    }
+    
+    .nearest-info p { 
+      color: #155724; 
+      font-size: 0.9em; 
+      margin: 4px 0; 
+    }
+    
+    .nearest-info button { 
+      width: 100%; 
+      margin-top: 8px; 
+      background: linear-gradient(135deg, #28a745, #20c997); 
+    }
+    
+    #streetViewModal { 
+      display: none; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(0,0,0,0.95); 
+      z-index: 9999; 
+      justify-content: center; 
+      align-items: center; 
+    }
+    
+    #streetViewModal.active { 
+      display: flex; 
+    }
+    
+    .modal-content { 
+      background: #fff; 
+      width: 90%; 
+      max-width: 1200px; 
+      height: 85%; 
+      border-radius: 15px; 
+      display: flex; 
+      flex-direction: column; 
+      overflow: hidden; 
+      box-shadow: 0 10px 50px rgba(0,0,0,0.5); 
+    }
+    
+    .modal-header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 15px 20px; 
+      background: #f5f5f5; 
+      border-bottom: 2px solid #e0e0e0; 
+    }
+    
+    .modal-header h3 { 
+      margin: 0; 
+      color: #1e3c72; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+    }
+    
+    .close-modal { 
+      cursor: pointer; 
+      background: #dc3545; 
+      color: #fff; 
+      width: 35px; 
+      height: 35px; 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      transition: 0.3s; 
+    }
+    
+    .close-modal:hover { 
+      transform: rotate(90deg) scale(1.1); 
+    }
+    
+    #streetViewContainer { 
+      flex: 1; 
+      position: relative; 
+      background: #f5f5f5; 
+    }
+    
+    .loading { 
+      text-align: center; 
+      padding: 40px; 
+      color: #667eea; 
+      font-size: 1.1em; 
+    }
+    
+    .loading i { 
+      font-size: 3em; 
+      animation: spin 1s linear infinite; 
+      display: block; 
+      margin-bottom: 15px; 
+    }
+    
+    @keyframes spin { 
+      from { transform: rotate(0deg); } 
+      to { transform: rotate(360deg); } 
+    }
+    
+    .success-note { 
+      background: #d4edda; 
+      border: 2px solid #28a745; 
+      padding: 10px; 
+      border-radius: 8px; 
+      margin-bottom: 12px; 
+      font-size: 0.85em; 
+      color: #155724; 
+    }
+    
+    .tip { 
+      background: #e3f2fd; 
+      border-left: 4px solid #2196f3; 
+      padding: 10px; 
+      border-radius: 6px; 
+      font-size: 0.85em; 
+      color: #0d47a1; 
+    }
+    
+    #muteBtn { 
+      background: linear-gradient(135deg, #ff6b6b, #ee5a6f); 
+      min-width: 50px; 
+      justify-content: center; 
+    }
+    
+    #clearBtn { 
+      width: 100%; 
+      background: linear-gradient(135deg, #adb5bd, #6c757d); 
+      margin-top: 8px; 
+    }
+    
+    footer { 
+      text-align: center; 
+      padding: 10px; 
+      background: #1e3c72; 
+      color: #fff; 
+      font-size: 0.85em; 
+      flex-shrink: 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) { 
+      aside { 
+        width: 100%; 
+        height: 40vh; 
+        border-right: none; 
+        border-bottom: 3px solid #667eea; 
+      } 
+      
+      main { 
+        flex-direction: column; 
+        height: calc(100vh - 80px);
+      } 
+      
+      #map { 
+        height: 60vh; 
+      } 
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><i class="fas fa-map-marked-alt"></i> AI Teerth Smart Navigator</h1>
+    <p><i class="fas fa-route"></i> Voice Navigation • Real-time Tracking • 10km Search</p>
+  </header>
+
+  <main>
+    <aside>
+      <h2><i class="fas fa-compass"></i> Control Center</h2>
+
+      <div class="success-note">
+        <strong>✅ Ready to Use!</strong>
+        <p style="margin-top: 5px;">All features work. No API keys needed for core functions.</p>
+      </div>
+
+      <div class="control-group">
+        <button id="detectBtn"><i class="fas fa-crosshairs"></i> Refresh Location</button>
+        <button id="muteBtn"><i class="fas fa-volume-up"></i></button>
+      </div>
+
+      <div id="locationDetected" class="nearest-info" style="display: none;">
+        <i class="fas fa-check-circle"></i> Location detected successfully!
+      </div>
+
+      <div class="control-group">
+        <button id="startTrackingBtn"><i class="fas fa-play"></i> Start Tracking</button>
+        <button id="stopTrackingBtn" style="display: none; background: linear-gradient(135deg, #dc3545, #c82333);"><i class="fas fa-stop"></i> Stop</button>
+      </div>
+
+      <div class="category">
+        <button data-query="fuel"><i class="fas fa-gas-pump"></i><span>Petrol</span></button>
+        <button data-query="hospital"><i class="fas fa-hospital"></i><span>Hospital</span></button>
+        <button data-query="restaurant"><i class="fas fa-utensils"></i><span>Food</span></button>
+        <button data-query="hotel"><i class="fas fa-hotel"></i><span>Hotel</span></button>
+        <button data-query="atm"><i class="fas fa-money-bill-wave"></i><span>ATM</span></button>
+        <button data-query="bank"><i class="fas fa-university"></i><span>Bank</span></button>
+      </div>
+
+      <input type="text" id="searchInput" placeholder="🔍 Search (e.g., cafe, mall)" />
+      <button id="searchBtn" style="width: 100%;"><i class="fas fa-search"></i> Search Places (10km)</button>
+      <button id="clearBtn"><i class="fas fa-trash-alt"></i> Clear All</button>
+
+      <div id="nearestInfo" class="nearest-info">
+        <h3><i class="fas fa-star"></i> Nearest Place</h3>
+        <p><i class="fas fa-map-pin"></i> <span id="nearestName">–</span></p>
+        <p><i class="fas fa-road"></i> <span id="nearestDistance">–</span></p>
+        <p><i class="fas fa-clock"></i> <span id="nearestETA">–</span></p>
+        <button onclick="navigateToNearest()"><i class="fas fa-directions"></i> Navigate</button>
+      </div>
+
+      <div class="tip" style="margin-top: 15px;">
+        <i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Click "360°" to view locations on map. Real 360° requires API keys.
+      </div>
+
+      <hr style="margin: 15px 0; border: none; border-top: 1px solid #ddd;"/>
+
+      <h3 style="font-size: 1.1em; color: #1e3c72; margin-bottom: 10px;"><i class="fas fa-list"></i> Search Results</h3>
+      <div id="results"></div>
+    </aside>
+
+    <div id="map"></div>
+  </main>
+
+  <!-- 360° Modal -->
+  <div id="streetViewModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-street-view"></i> Location View</h3>
+        <div class="close-modal" onclick="closeStreetView()"><i class="fas fa-times"></i></div>
+      </div>
+      <div id="streetViewContainer"></div>
+    </div>
+  </div>
+
+  <footer>
+    <i class="fas fa-code"></i> © 2025 AI Teerth Smart Navigator
+  </footer>
+
+  <script>
+    // Global variables
+    let map, userMarker, liveMarker, routingControl;
+    let markers = [];
+    let userLat = 28.6139, userLng = 77.2090;
+    let watchId = null, isTracking = false;
+    let currentPlaces = [], nearestPlace = null;
+    let voiceEnabled = true, synth = window.speechSynthesis;
+
+    // INITIALIZE MAP
+    function initMap() {
+      try {
+        // Create map instance
+        map = L.map('map', {
+          center: [userLat, userLng],
+          zoom: 12,
+          zoomControl: true,
+          scrollWheelZoom: true
+        });
+        
+        // Add tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          maxZoom: 19,
+          minZoom: 3
+        }).addTo(map);
+        
+        console.log('✅ Map initialized successfully');
+        
+        // Auto-detect location after map loads
+        setTimeout(detectLocationSilent, 1000);
+        
+      } catch(error) {
+        console.error('❌ Map initialization error:', error);
+        alert('Map failed to load. Please refresh the page.');
+      }
+    }
+
+    // SILENT LOCATION DETECTION
+    function detectLocationSilent() {
+      if(!navigator.geolocation) {
+        console.warn('Geolocation not supported');
+        return;
+      }
+      
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          userLat = pos.coords.latitude;
+          userLng = pos.coords.longitude;
+          
+          // Move map to user location
+          map.setView([userLat, userLng], 15);
+          
+          // Remove old marker if exists
+          if(userMarker) {
+            map.removeLayer(userMarker);
+          }
+          
+          // Create custom icon
+          const icon = L.divIcon({
+            html: '<i class="fas fa-map-marker-alt" style="font-size: 30px; color: #dc3545;"></i>',
+            iconSize: [30, 30],
+            className: 'custom-marker'
+          });
+          
+          // Add user marker
+          userMarker = L.marker([userLat, userLng], { icon })
+            .addTo(map)
+            .bindPopup('📍 You are here')
+            .openPopup();
+          
+          document.getElementById('locationDetected').style.display = 'block';
+          speak('Location detected successfully');
+          
+          console.log('✅ Location:', userLat, userLng);
+        },
+        error => {
+          console.warn('Auto-location failed:', error.message);
+        },
+        { 
+          enableHighAccuracy: true, 
+          timeout: 10000, 
+          maximumAge: 0 
+        }
+      );
+    }
+
+    // VOICE FUNCTIONS
+    function speak(text) {
+      if(!voiceEnabled || !synth) return;
+      synth.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 1.0;
+      synth.speak(utterance);
+    }
+
+    // Mute button
+    document.getElementById('muteBtn').onclick = () => {
+      voiceEnabled = !voiceEnabled;
+      const icon = document.getElementById('muteBtn').querySelector('i');
+      icon.className = voiceEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+      if(voiceEnabled) speak('Voice navigation on');
+    };
+
+    // REFRESH LOCATION
+    document.getElementById('detectBtn').onclick = detectLocation;
+
+    function detectLocation() {
+      if(!navigator.geolocation) {
+        alert('❌ Geolocation not supported');
+        return;
+      }
+      
+      const results = document.getElementById('results');
+      results.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><br>Detecting location...</div>';
+      
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          userLat = pos.coords.latitude;
+          userLng = pos.coords.longitude;
+          map.setView([userLat, userLng], 15);
+          
+          if(userMarker) map.removeLayer(userMarker);
+          
+          const icon = L.divIcon({
+            html: '<i class="fas fa-map-marker-alt" style="font-size: 30px; color: #dc3545;"></i>',
+            iconSize: [30, 30]
+          });
+          
+          userMarker = L.marker([userLat, userLng], { icon })
+            .addTo(map)
+            .bindPopup('📍 You are here')
+            .openPopup();
+          
+          results.innerHTML = '<p style="color: green; text-align: center; padding: 20px;"><i class="fas fa-check-circle"></i> Location updated!</p>';
+          document.getElementById('locationDetected').style.display = 'block';
+          speak('Location refreshed successfully');
+        },
+        error => {
+          alert('❌ Location access denied: ' + error.message);
+          results.innerHTML = '<p style="color: red; text-align: center; padding: 20px;"><i class="fas fa-exclamation-circle"></i> Failed</p>';
+        }
+      );
+    }
+
+    // SEARCH NEARBY (10 KM)
+    document.getElementById('searchBtn').onclick = () => {
+      const query = document.getElementById('searchInput').value.trim();
+      if(!query) {
+        alert('Please enter a search term');
+        return;
+      }
+      searchNearby(query);
+    };
+
+    document.getElementById('searchInput').addEventListener('keypress', e => {
+      if(e.key === 'Enter') document.getElementById('searchBtn').click();
+    });
+
+    // Category buttons
+    document.querySelectorAll('.category button').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const query = e.currentTarget.getAttribute('data-query');
+        searchNearby(query);
+      });
+    });
+
+    function searchNearby(query) {
+      clearMarkers();
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><br>Searching nearby places...</div>';
+      
+      speak(`Searching for ${query}`);
+      
+      const radius = 10000; // 10 km
+      const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];(node["amenity"="${query}"](around:${radius},${userLat},${userLng}););out body;`;
+      
+      fetch(overpassUrl)
+        .then(res => res.json())
+        .then(data => {
+          if(data.elements && data.elements.length > 0) {
+            currentPlaces = data.elements;
+            displayResults(data.elements, query);
+            findAndHighlightNearest(data.elements);
+            speak(`Found ${data.elements.length} places within ten kilometers`);
+          } else {
+            resultsDiv.innerHTML = '<p style="color: orange; text-align: center; padding: 20px;"><i class="fas fa-exclamation-triangle"></i> No results within 10 km</p>';
+            currentPlaces = [];
+            speak('No places found nearby');
+          }
+        })
+        .catch(error => {
+          console.error('Search error:', error);
+          resultsDiv.innerHTML = '<p style="color: red; text-align: center; padding: 20px;"><i class="fas fa-times-circle"></i> Search failed. Try again.</p>';
+        });
+    }
+
+    // DISPLAY RESULTS
+    function displayResults(places, category, nearest = null) {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '';
+      
+      const sortedPlaces = places.map(place => {
+        const dist = parseFloat(calculateDistance(userLat, userLng, place.lat, place.lon));
+        return { ...place, distance: dist };
+      }).sort((a, b) => a.distance - b.distance);
+      
+      sortedPlaces.forEach((place, index) => {
+        const lat = place.lat;
+        const lng = place.lon;
+        const name = place.tags.name || `Place ${index + 1}`;
+        const address = place.tags['addr:street'] || 'Address not available';
+        const isNearest = nearest && place.lat === nearest.lat && place.lon === nearest.lon;
+        
+        const div = document.createElement('div');
+        div.className = 'result-item' + (isNearest ? ' nearest' : '');
+        div.innerHTML = `
+          <h4><i class="fas fa-map-marker-alt"></i> ${name}</h4>
+          <p><i class="fas fa-map-signs"></i> ${address}</p>
+          <p><i class="fas fa-road"></i> ${place.distance} km away</p>
+          <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+            <button style="flex: 1; min-width: 80px; padding: 8px;" onclick="viewOnMap(${lat}, ${lng})"><i class="fas fa-eye"></i> View</button>
+            <button style="flex: 1; min-width: 80px; padding: 8px; background: linear-gradient(135deg, #28a745, #20c997);" onclick="getDirections(${lat}, ${lng}, '${name.replace(/'/g, "\\'")}')"><i class="fas fa-directions"></i> Go</button>
+            <button style="flex: 1; min-width: 80px; padding: 8px; background: linear-gradient(135deg, #ff6b6b, #ee5a6f);" onclick="open360View(${lat}, ${lng}, '${name.replace(/'/g, "\\'")}')"><i class="fas fa-street-view"></i> 360°</button>
+          </div>
+        `;
+        resultsDiv.appendChild(div);
+        
+        // Add marker to map
+        const markerIcon = L.divIcon({
+          html: `<i class="fas fa-map-pin" style="font-size: 25px; color: ${isNearest ? '#28a745' : '#667eea'}"></i>`,
+          iconSize: [25, 25],
+          className: 'custom-marker'
+        });
+        
+        const marker = L.marker([lat, lng], { icon: markerIcon })
+          .addTo(map)
+          .bindPopup(`<b>${name}</b><br>${address}<br>📏 ${place.distance} km`);
+        markers.push(marker);
+      });
+    }
+
+    // CALCULATE DISTANCE
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return (R * c).toFixed(2);
+    }
+
+    // FIND NEAREST
+    function findAndHighlightNearest(places) {
+      if(places.length === 0) return;
+      
+      let minDist = Infinity;
+      let nearest = null;
+      
+      places.forEach(place => {
+        const dist = parseFloat(calculateDistance(userLat, userLng, place.lat, place.lon));
+        if(dist < minDist) {
+          minDist = dist;
+          nearest = place;
+        }
+      });
+      
+      if(!nearest) return;
+      
+      nearestPlace = nearest;
+      const info = document.getElementById('nearestInfo');
+      const name = nearest.tags.name || 'Unknown Place';
+      
+      document.getElementById('nearestName').textContent = name;
+      document.getElementById('nearestDistance').textContent = `${minDist} km away`;
+      
+      const etaMinutes = Math.round((minDist / 40) * 60);
+      document.getElementById('nearestETA').textContent = `~${etaMinutes} minutes`;
+      
+      info.style.display = 'block';
+      speak(`Nearest place is ${name}, ${minDist} kilometers away`);
+      
+      displayResults(places, '', nearest);
+    }
+
+    function navigateToNearest() {
+      if(nearestPlace) {
+        const name = nearestPlace.tags.name || 'Nearest Place';
+        getDirections(nearestPlace.lat, nearestPlace.lon, name);
+      }
+    }
+
+    // DIRECTIONS
+    function getDirections(destLat, destLng, name) {
+      if(routingControl) {
+        map.removeControl(routingControl);
+      }
+      
+      speak(`Starting navigation to ${name}`);
+      
+      routingControl = L.Routing.control({
+        waypoints: [
+          L.latLng(userLat, userLng),
+          L.latLng(destLat, destLng)
+        ],
+        routeWhileDragging: false,
+        showAlternatives: true,
+        lineOptions: {
+          styles: [{ color: '#667eea', opacity: 0.8, weight: 6 }]
+        }
+      }).addTo(map);
+      
+      routingControl.on('routesfound', function(e) {
+        const summary = e.routes[0].summary;
+        const distance = (summary.totalDistance / 1000).toFixed(2);
+        const time = Math.round(summary.totalTime / 60);
+        speak(`Route found. Distance ${distance} kilometers. Estimated time ${time} minutes.`);
+      });
+      
+      if(!isTracking) startTracking();
+    }
+
+    function clearRoute() {
+      if(routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+        speak('Route cleared');
+      }
+      stopTracking();
+    }
+
+    function viewOnMap(lat, lng) {
+      map.setView([lat, lng], 17);
+      markers.forEach(m => {
+        if(m.getLatLng().lat === lat && m.getLatLng().lng === lng) {
+          m.openPopup();
+        }
+      });
+    }
+
+    // CLEAR MARKERS
+    function clearMarkers() {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+      document.getElementById('results').innerHTML = '';
+      document.getElementById('nearestInfo').style.display = 'none';
+      currentPlaces = [];
+      nearestPlace = null;
+      clearRoute();
+    }
+
+    document.getElementById('clearBtn').onclick = clearMarkers;
+
+    // TRACKING
+    document.getElementById('startTrackingBtn').onclick = startTracking;
+    document.getElementById('stopTrackingBtn').onclick = stopTracking;
+
+    function startTracking() {
+      if(!navigator.geolocation) {
+        alert('❌ Geolocation not supported');
+        return;
+      }
+      
+      isTracking = true;
+      document.getElementById('startTrackingBtn').style.display = 'none';
+      document.getElementById('stopTrackingBtn').style.display = 'inline-flex';
+      speak('Live tracking started');
+      
+      watchId = navigator.geolocation.watchPosition(
+        pos => {
+          userLat = pos.coords.latitude;
+          userLng = pos.coords.longitude;
+          
+          if(!liveMarker) {
+            const icon = L.divIcon({
+              html: '<i class="fas fa-location-arrow" style="font-size: 24px; color: #28a745;"></i>',
+              iconSize: [24, 24]
+            });
+            liveMarker = L.marker([userLat, userLng], { icon })
+              .addTo(map)
+              .bindPopup('📍 Live Location');
+          } else {
+            liveMarker.setLatLng([userLat, userLng]);
+          }
+          
+          if(routingControl) {
+            const waypoints = routingControl.getWaypoints();
+            routingControl.setWaypoints([
+              L.latLng(userLat, userLng),
+              waypoints[1].latLng
+            ]);
+          }
+          
+          if(currentPlaces.length > 0) {
+            findAndHighlightNearest(currentPlaces);
+          }
+        },
+        error => console.error('Tracking error:', error),
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+      );
+    }
+
+    function stopTracking() {
+      if(watchId) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+      isTracking = false;
+      document.getElementById('stopTrackingBtn').style.display = 'none';
+      document.getElementById('startTrackingBtn').style.display = 'inline-flex';
+      
+      if(liveMarker) {
+        map.removeLayer(liveMarker);
+        liveMarker = null;
+      }
+      
+      speak('Tracking stopped');
+    }
+
+    // 360° VIEW
+    function open360View(lat, lng, name) {
+      const modal = document.getElementById('streetViewModal');
+      const container = document.getElementById('streetViewContainer');
+      
+      modal.classList.add('active');
+      speak(`Opening view of ${name}`);
+      
+      container.innerHTML = `
+        <iframe 
+          style="width: 100%; height: 100%; border: none;"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.01},${lat-0.01},${lng+0.01},${lat+0.01}&layer=mapnik&marker=${lat},${lng}"
+          allowfullscreen>
+        </iframe>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 15px; background: rgba(255,255,255,0.95); text-align: center; border-top: 2px solid #667eea;">
+          <p style="margin: 0; color: #666; font-size: 0.9em;">
+            <i class="fas fa-info-circle"></i> 
+            <strong>Map View:</strong> Showing location on OpenStreetMap
+          </p>
+        </div>
+      `;
+    }
+
+    function closeStreetView() {
+      const modal = document.getElementById('streetViewModal');
+      modal.classList.remove('active');
+      document.getElementById('streetViewContainer').innerHTML = '';
+    }
+
+    // INITIALIZE ON PAGE LOAD
+    window.addEventListener('load', () => {
+      console.log('Page loaded, initializing map...');
+      initMap();
+    });
+
+    // Fallback initialization
+    if(document.readyState === 'complete') {
+      initMap();
+    }
+  </script>
+</body>
+</html>

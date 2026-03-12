@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR Experiences - Teerthlok</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── VR Page Specific Styles ── */
+        .vr-hero {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+            background: linear-gradient(135deg, rgba(10,10,30,0.92), rgba(30,10,60,0.88));
+            position: relative;
+            overflow: hidden;
+        }
+        .vr-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600') center/cover no-repeat;
+            opacity: 0.18;
+            z-index: 0;
+        }
+        .vr-hero > * { position: relative; z-index: 1; }
+        .vr-hero h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+        .vr-hero h2 span { color: #a78bfa; }
+        .vr-hero p {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.75);
+            max-width: 600px;
+            line-height: 1.7;
+            margin-bottom: 36px;
+        }
+
+        /* ── Launch Banner ── */
+        .vr-launch-banner {
+            background: linear-gradient(135deg, #6d28d9, #4f46e5);
+            border-radius: 20px;
+            padding: 32px 40px;
+            max-width: 700px;
+            width: 90%;
+            margin: 0 auto 60px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(109,40,217,0.4);
+            border: 1px solid rgba(167,139,250,0.3);
+        }
+        .vr-launch-banner h3 {
+            color: #fff;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        .vr-launch-banner p {
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+        .vr-launch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            color: #6d28d9;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .vr-launch-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 30px rgba(109,40,217,0.5);
+            color: #4f46e5;
+        }
+        .vr-launch-btn i { font-size: 1.2rem; }
+
+        /* ── How It Works ── */
+        .how-section {
+            padding: 70px 20px;
+            background: rgba(10,10,30,0.6);
+            text-align: center;
+        }
+        .how-section h2 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 48px;
+        }
+        .how-section h2 span { color: #a78bfa; }
+        .steps-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .step-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(167,139,250,0.2);
+            border-radius: 16px;
+            padding: 28px 24px;
+            width: 200px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .step-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(167,139,250,0.6);
+        }
+        .step-num {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, #6d28d9, #4f46e5);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 800; color: #fff;
+            margin: 0 auto 16px;
+        }
+        .step-card h4 { color: #e9d5ff; margin-bottom: 8px; font-size: 0.95rem; }
+        .step-card p  { color: rgba(255,255,255,0.55); font-size: 0.82rem; line-height: 1.5; }
+
+        /* ── VR Video Cards ── */
+        .vr-videos-section {
+            padding: 70px 20px;
+            text-align: center;
+        }
+        .vr-videos-section h2 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+        .vr-videos-section h2 span { color: #a78bfa; }
+        .vr-videos-section .subtitle {
+            color: rgba(255,255,255,0.55);
+            margin-bottom: 48px;
+            font-size: 0.95rem;
+        }
+        .vr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            margin: 0 auto 48px;
+        }
+        .vr-card {
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(167,139,250,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .vr-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(109,40,217,0.35);
+            border-color: rgba(167,139,250,0.5);
+        }
+        .vr-card-thumb {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            display: block;
+            background: linear-gradient(135deg, #1e1035, #2d1b69);
+        }
+        .vr-card-thumb-placeholder {
+            width: 100%;
+            height: 170px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #1e1035, #2d1b69);
+        }
+        .vr-card-body { padding: 18px; text-align: left; }
+        .vr-card-body h4 { color: #e9d5ff; margin-bottom: 6px; font-size: 1rem; }
+        .vr-card-body p  { color: rgba(255,255,255,0.5); font-size: 0.82rem; line-height: 1.5; margin-bottom: 14px; }
+        .vr-card-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #6d28d9, #4f46e5);
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 50px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .vr-card-btn:hover { opacity: 0.88; transform: scale(1.04); }
+        .badge-360 {
+            display: inline-block;
+            background: rgba(167,139,250,0.15);
+            border: 1px solid rgba(167,139,250,0.4);
+            color: #c4b5fd;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 50px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Phone / Gyro tip box ── */
+        .gyro-tip {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(167,139,250,0.2);
+            border-radius: 16px;
+            padding: 28px 32px;
+            max-width: 700px;
+            margin: 0 auto 60px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            text-align: left;
+        }
+        .gyro-tip-icon {
+            font-size: 2.4rem;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+        .gyro-tip h4 { color: #e9d5ff; margin-bottom: 6px; font-size: 1rem; }
+        .gyro-tip p  { color: rgba(255,255,255,0.55); font-size: 0.88rem; line-height: 1.6; }
+        .gyro-tip code {
+            background: rgba(167,139,250,0.15);
+            color: #c4b5fd;
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* ── Inline VR Player iframe ── */
+        .inline-player-section {
+            padding: 60px 20px;
+            background: rgba(0,0,0,0.4);
+            text-align: center;
+        }
+        .inline-player-section h2 { color: #fff; font-size: 1.8rem; margin-bottom: 8px; }
+        .inline-player-section h2 span { color: #a78bfa; }
+        .inline-player-section p { color: rgba(255,255,255,0.55); margin-bottom: 28px; font-size: 0.9rem; }
+        .player-frame-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(167,139,250,0.25);
+            box-shadow: 0 24px 80px rgba(109,40,217,0.3);
+            background: #000;
+            height: 520px;
+        }
+        .player-frame-wrap iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .gyro-tip { flex-direction: column; }
+            .player-frame-wrap { height: 320px; }
+            .steps-grid { gap: 14px; }
+            .step-card { width: 150px; padding: 20px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Parallax Background -->
+    <div class="parallax-bg"></div>
+
+    <!-- Header (same as index.html) -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-mountain"></i>
+            <h1>Teerthlok</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="ai.html.html">AI Talk</a></li>
+                <li><a href="TRIP.HTML">Smart Travel</a></li>
+                <li><a href="VR.HTML" class="active">VR Experiences</a></li>
+                <li><a href="Lok Katha.html">Lok Katha</a></li>
+                <li><a href="Dashboard.html">Favourites</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="vr-hero">
+        <h2>Explore Uttarakhand in <span>360° VR</span></h2>
+        <p>Put on your headset or use your phone's gyroscope to virtually stand at Badrinath, Kedarnath, Rishikesh, and more — without leaving your home.</p>
+    </section>
+
+    <!-- Launch Banner -->
+    <div style="padding: 0 20px; margin-top: -30px; position: relative; z-index: 10;">
+        <div class="vr-launch-banner">
+            <h3>🥽 Open the Full VR Player</h3>
+            <p>Download any 360° YouTube video and watch it in immersive VR — with full gyroscope support on your phone.</p>
+            <a href="http://localhost:5173" target="_blank" class="vr-launch-btn">
+                <i class="fas fa-vr-cardboard"></i> Launch VR Player
+            </a>
+            &nbsp;&nbsp;
+            <a href="http://10.210.219.115:5173" target="_blank" class="vr-launch-btn" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3);">
+                <i class="fas fa-mobile-alt"></i> Open on Phone
+            </a>
+        </div>
+    </div>
+
+    <!-- Gyro tip -->
+    <div style="padding: 40px 20px 0;">
+        <div class="gyro-tip">
+            <div class="gyro-tip-icon">📱</div>
+            <div>
+                <h4>Gyroscope Head-Tracking on Your Phone</h4>
+                <p>
+                    Open the VR player on your phone by going to <code>http://10.210.219.115:5173</code> in Chrome.
+                    After the video loads, tap the <strong>📱 Tap for Gyro</strong> button — then physically move your phone
+                    left, right, up and down to look around inside the 360° video. Place your phone in a VR cardboard headset
+                    for a fully immersive experience. <br><br>
+                    <strong>iPhone users:</strong> requires HTTPS — use ngrok or open on the same device as the server.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <section class="how-section">
+        <h2>How It <span>Works</span></h2>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-num">1</div>
+                <h4>Paste URL</h4>
+                <p>Paste any YouTube 360° video URL into the VR player</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">2</div>
+                <h4>Download</h4>
+                <p>The app downloads the video to your device automatically</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">3</div>
+                <h4>Play</h4>
+                <p>Hit play and the video loads inside a 360° sphere</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">4</div>
+                <h4>Enable Gyro</h4>
+                <p>Tap 📱 Gyro on your phone to enable head-tracking</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">5</div>
+                <h4>Look Around</h4>
+                <p>Move your phone or drag on screen to explore 360°</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommended 360° Videos -->
+    <section class="vr-videos-section">
+        <h2>Recommended <span>360° Videos</span></h2>
+        <p class="subtitle">Click any card to open it directly in the VR player</p>
+        <div class="vr-grid">
+
+            <div class="vr-card" onclick="openInVR('https://www.youtube.com/watch?v=_RXBOfQFSCY')">
+                <div class="vr-card-thumb-placeholder">🏔️</div>
+                <div class="vr-card-body">
+                    <div class="badge-360">360° VR</div>
+                    <h4>Kedarnath Temple</h4>
+                    <p>Virtually stand at one of the holiest Char Dham shrines in the Himalayas.</p>
+                    <span class="vr-card-btn"><i class="fas fa-play"></i> Watch in VR</span>
+                </div>
+            </div>
+
+            <div class="vr-card" onclick="openInVR('https://www.youtube.com/watch?v=VDNIuBQBSmk')">
+                <div class="vr-card-thumb-placeholder">🙏</div>
+                <div class="vr-card-body">
+                    <div class="badge-360">360° VR</div>
+                    <h4>Badrinath Temple</h4>
+                    <p>A blessed 360° VR glimpse from Badrinath — Char Dham Darshan experience.</p>
+                    <span class="vr-card-btn"><i class="fas fa-play"></i> Watch in VR</span>
+                </div>
+            </div>
+
+            <div class="vr-card" onclick="openInVR('https://www.youtube.com/watch?v=zhOFSNnRgT4')">
+                <div class="vr-card-thumb-placeholder">🌊</div>
+                <div class="vr-card-body">
+                    <div class="badge-360">360° VR</div>
+                    <h4>Rishikesh Ganga Aarti</h4>
+                    <p>Experience the magical evening Ganga Aarti at Triveni Ghat in 360°.</p>
+                    <span class="vr-card-btn"><i class="fas fa-play"></i> Watch in VR</span>
+                </div>
+            </div>
+
+            <div class="vr-card" onclick="openInVR('https://www.youtube.com/watch?v=lB5P3C0XULI')">
+                <div class="vr-card-thumb-placeholder">🌸</div>
+                <div class="vr-card-body">
+                    <div class="badge-360">360° VR</div>
+                    <h4>Valley of Flowers</h4>
+                    <p>Walk through the UNESCO World Heritage alpine meadow in full 360°.</p>
+                    <span class="vr-card-btn"><i class="fas fa-play"></i> Watch in VR</span>
+                </div>
+            </div>
+
+            <div class="vr-card" onclick="openInVR('https://www.youtube.com/watch?v=Y4MtM6ATroI')">
+                <div class="vr-card-thumb-placeholder">❄️</div>
+                <div class="vr-card-body">
+                    <div class="badge-360">360° VR</div>
+                    <h4>Auli Ski Resort</h4>
+                    <p>Glide through snow-covered Himalayan slopes at Auli in immersive VR.</p>
+                    <span class="vr-card-btn"><i class="fas fa-play"></i> Watch in VR</span>
+                </div>
+            </div>
+
+            <div class="vr-card" onclick="openInVR('https://www.youtube.com/watch?v=Hw0L4b4XTHI')">
+                <div class="vr-card-thumb-placeholder">🦅</div>
+                <div class="vr-card-body">
+                    <div class="badge-360">360° VR</div>
+                    <h4>Jim Corbett Wildlife</h4>
+                    <p>360° jungle safari experience in India's oldest national park.</p>
+                    <span class="vr-card-btn"><i class="fas fa-play"></i> Watch in VR</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Custom URL box -->
+        <div style="max-width:600px; margin:0 auto; background:rgba(255,255,255,0.04); border:1px solid rgba(167,139,250,0.2); border-radius:16px; padding:28px 24px;">
+            <h4 style="color:#e9d5ff; margin-bottom:8px; font-size:1rem;">🔗 Play Any 360° YouTube Video</h4>
+            <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; margin-bottom:16px;">Paste any YouTube 360° URL below and open it directly in the VR player.</p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <input id="customUrl" type="text" placeholder="https://www.youtube.com/watch?v=..."
+                    style="flex:1; min-width:200px; padding:10px 14px; border-radius:10px; border:1px solid rgba(167,139,250,0.3); background:rgba(255,255,255,0.07); color:#fff; font-size:0.9rem; outline:none;" />
+                <button onclick="openCustom()" class="vr-card-btn" style="padding:10px 20px;">
+                    <i class="fas fa-vr-cardboard"></i> Open in VR
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inline embedded VR Player -->
+    <section class="inline-player-section">
+        <h2>Try It <span>Right Here</span></h2>
+        <p>The VR player is embedded below — paste a URL, download, and watch in 360° without leaving this page.</p>
+        <div class="player-frame-wrap">
+            <iframe src="http://localhost:5173" title="VRVault Player" allowfullscreen
+                allow="gyroscope; accelerometer; autoplay; fullscreen"></iframe>
+        </div>
+        <p style="margin-top:16px; color:rgba(255,255,255,0.35); font-size:0.8rem;">
+            ⚠ The player requires the VR server to be running on your PC. See the How It Works section above.
+        </p>
+    </section>
+
+    <!-- Footer (same as index.html) -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Teerthlok</h3>
+                <p>Your gateway to exploring the natural and cultural wonders of Uttarakhand.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">Destinations</a></li>
+                    <li><a href="VR.HTML">VR Experiences</a></li>
+                    <li><a href="TRIP.HTML">Trip Planner</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Services</h3>
+                <ul>
+                    <li><a href="#">AI Support</a></li>
+                    <li><a href="VR.HTML">VR Tours</a></li>
+                    <li><a href="#">Community</a></li>
+                    <li><a href="#">Cultural Exploration</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-envelope"></i> info@teerthlok.com</a></li>
+                    <li><a href="#"><i class="fas fa-phone"></i> +91 9876543210</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Dehradun, Uttarakhand</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Teerthlok. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Open a YouTube URL in the VR player (new tab, pre-filled)
+        function openInVR(youtubeUrl) {
+            // Opens the VR app and passes the URL as a query param
+            const encoded = encodeURIComponent(youtubeUrl);
+            window.open('http://localhost:5173?url=' + encoded, '_blank');
+        }
+
+        function openCustom() {
+            const val = document.getElementById('customUrl').value.trim();
+            if (!val) { alert('Please paste a YouTube URL first.'); return; }
+            openInVR(val);
+        }
+
+        // Parallax scroll effect (matches index.html behaviour)
+        window.addEventListener('scroll', () => {
+            const bg = document.querySelector('.parallax-bg');
+            if (bg) bg.style.transform = `translateY(${window.scrollY * 0.4}px)`;
+        });
+    </script>
+</body>
+</html>

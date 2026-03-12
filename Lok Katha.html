@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeerthLok — Community Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue:        #1A73E8;
+    --blue-light:  #4A9FF5;
+    --blue-pale:   #E8F0FE;
+    --blue-dark:   #1557B0;
+    --teal:        #0D7377;
+    --teal-light:  #14A085;
+    --navy:        #0A1931;
+    --navy-soft:   #1B3A6B;
+    --cream:       #F0F4FF;
+    --warm-white:  #F8FAFF;
+    --stone:       #5A7080;
+    --stone-light: #8AAABB;
+    --ink:         #0D1B2A;
+    --ink-soft:    #1E3A5F;
+    --ink-muted:   #4A6580;
+    --surface:     #FFFFFF;
+    --surface-warm:#F4F8FF;
+    --border:      rgba(26,115,232,0.18);
+    --border-soft: rgba(26,115,232,0.10);
+    --shadow-warm: 0 4px 24px rgba(26,115,232,0.08);
+    --shadow-blue: 0 2px 16px rgba(26,115,232,0.15);
+    --r-sm: 8px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 28px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -20%; right: -15%;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(26,115,232,0.05) 0%, rgba(74,159,245,0.03) 40%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAVBAR ── */
+  .navbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(248,250,255,0.95);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+
+  .brand-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 2px 12px rgba(26,115,232,0.35);
+  }
+
+  .brand-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600;
+    color: var(--blue); letter-spacing: 0.02em;
+  }
+
+  .brand-sub {
+    font-size: 9px; font-weight: 500;
+    color: var(--stone); letter-spacing: 0.18em;
+    text-transform: uppercase; display: block; margin-top: -4px;
+  }
+
+  .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+
+  .nav-links a {
+    text-decoration: none; color: var(--ink-muted);
+    font-size: 13px; font-weight: 500;
+    padding: 6px 14px; border-radius: 20px;
+    transition: all 0.2s; letter-spacing: 0.02em;
+  }
+
+  .nav-links a:hover, .nav-links a.active {
+    background: var(--blue-pale); color: var(--blue);
+  }
+
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+
+  .nav-search {
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 7px 14px 7px 36px;
+    font-size: 13px; font-family: 'Jost', sans-serif;
+    color: var(--ink); width: 180px; transition: all 0.2s;
+  }
+
+  .search-wrap { position: relative; }
+  .search-wrap .icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--stone-light); font-size: 14px; pointer-events: none;
+  }
+
+  .nav-search:focus { outline: none; border-color: var(--blue-light); width: 220px; }
+
+  .nav-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue-light), var(--blue-dark));
+    border: 2px solid var(--blue-light);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 600; color: white;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    color: white; border: none; border-radius: 22px;
+    padding: 8px 20px; font-size: 13px;
+    font-family: 'Jost', sans-serif; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.03em;
+    box-shadow: 0 2px 12px rgba(26,115,232,0.30);
+  }
+
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 18px rgba(26,115,232,0.45); }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0A1931 0%, #1B3A6B 50%, #0D2B5E 100%);
+    padding: 52px 32px 44px;
+    position: relative; overflow: hidden; text-align: center;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234A9FF5' fill-opacity='0.05'%3E%3Cpath d='M30 0L35 25L60 30L35 35L30 60L25 35L0 30L25 25z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    opacity: 0.7;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute; bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 500px; height: 200px;
+    background: radial-gradient(ellipse, rgba(74,159,245,0.18) 0%, transparent 70%);
+  }
+
+  .hero-diya {
+    font-size: 40px; margin-bottom: 12px; display: block;
+    animation: flicker 3s ease-in-out infinite;
+    position: relative; z-index: 1;
+  }
+
+  @keyframes flicker {
+    0%,100% { transform: scale(1) rotate(-2deg); filter: brightness(1); }
+    25%      { transform: scale(1.05) rotate(1deg); filter: brightness(1.1); }
+    50%      { transform: scale(0.98) rotate(-1deg); filter: brightness(0.95); }
+    75%      { transform: scale(1.03) rotate(2deg); filter: brightness(1.05); }
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px; font-weight: 500;
+    color: var(--blue-light); letter-spacing: 0.02em;
+    margin-bottom: 8px; position: relative; z-index: 1;
+  }
+
+  .hero h1 span { color: white; font-style: italic; }
+
+  .hero-sub {
+    font-size: 14px; font-weight: 300;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 28px; position: relative; z-index: 1;
+  }
+
+  .hero-stats { display: flex; justify-content: center; gap: 40px; position: relative; z-index: 1; }
+  .hero-stat { text-align: center; }
+
+  .hero-stat .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 600; color: var(--blue-light); display: block;
+  }
+
+  .hero-stat .label {
+    font-size: 11px; font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  .hero-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.15); align-self: center; }
+
+  /* ── MAIN LAYOUT ── */
+  .main-container {
+    max-width: 1280px; margin: 0 auto; padding: 32px 24px;
+    display: grid; grid-template-columns: 260px 1fr 280px;
+    gap: 24px; position: relative; z-index: 1;
+  }
+
+  /* ── LEFT SIDEBAR ── */
+  .sidebar-left { display: flex; flex-direction: column; gap: 16px; }
+
+  .sidebar-card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg);
+    overflow: hidden; box-shadow: var(--shadow-warm);
+  }
+
+  .card-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .card-header-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+  }
+
+  .icon-blue   { background: var(--blue-pale); }
+  .icon-teal   { background: rgba(13,115,119,0.10); }
+  .icon-navy   { background: rgba(10,25,49,0.08); }
+
+  .card-header h3 {
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted);
+  }
+
+  /* Profile Card */
+  .profile-card { padding: 24px 20px; text-align: center; }
+
+  .profile-avatar-wrap { position: relative; display: inline-block; margin-bottom: 14px; }
+
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue-light), var(--blue-dark));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 600; color: white;
+    margin: 0 auto; border: 3px solid var(--blue-light);
+    box-shadow: 0 0 0 4px var(--blue-pale);
+  }
+
+  .profile-badge {
+    position: absolute; bottom: 2px; right: 2px;
+    width: 20px; height: 20px;
+    background: var(--blue); border-radius: 50%;
+    border: 2px solid white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: white;
+  }
+
+  .profile-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 600; color: var(--ink); margin-bottom: 2px;
+  }
+
+  .profile-title {
+    font-size: 11px; color: var(--blue); font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px;
+  }
+
+  .profile-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+
+  .pstat {
+    padding: 10px 4px;
+    background: var(--surface-warm);
+    border-radius: var(--r-sm); border: 1px solid var(--border-soft);
+  }
+
+  .pstat .n {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 600; color: var(--blue); display: block;
+  }
+
+  .pstat .l { font-size: 10px; color: var(--ink-muted); font-weight: 400; }
+
+  .btn-outline {
+    width: 100%; border: 1.5px solid var(--border);
+    background: transparent; border-radius: 22px; padding: 8px;
+    font-size: 12px; font-family: 'Jost', sans-serif; font-weight: 500;
+    color: var(--stone); cursor: pointer; transition: all 0.2s; letter-spacing: 0.04em;
+  }
+
+  .btn-outline:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+
+  /* Nav Menu */
+  .nav-menu { padding: 8px; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--r-sm);
+    cursor: pointer; transition: all 0.18s;
+    text-decoration: none; color: var(--ink-muted);
+    font-size: 13.5px; font-weight: 400;
+  }
+
+  .nav-item:hover, .nav-item.active { background: var(--blue-pale); color: var(--blue); }
+  .nav-item.active { font-weight: 600; }
+  .nav-item .ic { width: 18px; text-align: center; font-size: 15px; }
+
+  .nav-item .badge {
+    margin-left: auto; background: var(--blue); color: white;
+    font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px;
+  }
+
+  /* Trending Topics */
+  .trending-list { padding: 4px 0; }
+
+  .trending-item {
+    padding: 10px 20px; display: flex; align-items: center; gap: 10px;
+    cursor: pointer; transition: background 0.15s;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .trending-item:last-child { border-bottom: none; }
+  .trending-item:hover { background: var(--blue-pale); }
+
+  .trending-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 300; color: var(--blue-light);
+    width: 24px; text-align: center;
+  }
+
+  .trending-text { flex: 1; }
+  .trending-tag  { font-size: 13px; font-weight: 500; color: var(--ink); display: block; }
+  .trending-count { font-size: 11px; color: var(--stone-light); }
+  .trending-arrow { color: var(--stone-light); font-size: 12px; }
+
+  /* ── CENTER FEED ── */
+  .feed-area { display: flex; flex-direction: column; gap: 20px; }
+
+  /* Category Tabs */
+  .category-tabs {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg); padding: 8px;
+    display: flex; gap: 4px; flex-wrap: wrap; box-shadow: var(--shadow-warm);
+  }
+
+  .tab-btn {
+    padding: 8px 16px; border-radius: 22px; border: none;
+    background: transparent; font-size: 13px;
+    font-family: 'Jost', sans-serif; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; color: var(--ink-muted);
+    display: flex; align-items: center; gap: 6px; white-space: nowrap;
+  }
+
+  .tab-btn:hover { background: var(--blue-pale); color: var(--blue); }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    color: white; box-shadow: 0 2px 10px rgba(26,115,232,0.30);
+  }
+
+  /* Compose Box */
+  .compose-box {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg); padding: 20px; box-shadow: var(--shadow-warm);
+  }
+
+  .compose-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+
+  .compose-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue-light), var(--blue-dark));
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: white; font-weight: 600;
+  }
+
+  .compose-input {
+    flex: 1; background: var(--surface-warm);
+    border: 1.5px solid var(--border); border-radius: var(--r-md);
+    padding: 12px 16px; font-size: 14px;
+    font-family: 'Jost', sans-serif; color: var(--ink);
+    resize: none; min-height: 70px; transition: border-color 0.2s; line-height: 1.5;
+  }
+
+  .compose-input:focus { outline: none; border-color: var(--blue-light); }
+  .compose-input::placeholder { color: var(--stone-light); }
+
+  .compose-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .compose-action-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 7px 12px; border: 1px solid var(--border);
+    border-radius: 20px; background: transparent;
+    font-size: 12px; font-family: 'Jost', sans-serif; font-weight: 500;
+    color: var(--stone); cursor: pointer; transition: all 0.2s;
+  }
+
+  .compose-action-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+  .compose-submit { margin-left: auto; }
+
+  /* AI Banner */
+  .ai-banner {
+    background: linear-gradient(135deg, #0A1931 0%, #1B3A6B 50%, #0D2B5E 100%);
+    border-radius: var(--r-lg); padding: 20px 24px;
+    display: flex; align-items: center; gap: 16px;
+    position: relative; overflow: hidden;
+    cursor: pointer; transition: transform 0.2s;
+  }
+
+  .ai-banner:hover { transform: translateY(-2px); }
+
+  .ai-banner::before {
+    content: '';
+    position: absolute; top: -30%; right: -10%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(74,159,245,0.15) 0%, transparent 60%);
+  }
+
+  .ai-icon-wrap {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: linear-gradient(135deg, rgba(74,159,245,0.25), rgba(26,115,232,0.15));
+    border: 1px solid rgba(74,159,245,0.35);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+
+  .ai-text { flex: 1; z-index: 1; }
+
+  .ai-text h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 600; color: var(--blue-light); margin-bottom: 3px;
+  }
+
+  .ai-text p { font-size: 12.5px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+  .ai-btn {
+    background: rgba(74,159,245,0.15); border: 1px solid rgba(74,159,245,0.35);
+    color: var(--blue-light); border-radius: 20px; padding: 8px 16px;
+    font-size: 12px; font-family: 'Jost', sans-serif; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap; z-index: 1;
+  }
+
+  .ai-btn:hover { background: rgba(74,159,245,0.28); }
+
+  /* Post Card */
+  .post-card {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-warm);
+    transition: all 0.25s; animation: fadeUp 0.4s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .post-card:nth-child(2) { animation-delay: 0.05s; }
+  .post-card:nth-child(3) { animation-delay: 0.10s; }
+  .post-card:nth-child(4) { animation-delay: 0.15s; }
+  .post-card:nth-child(5) { animation-delay: 0.20s; }
+
+  .post-card:hover {
+    box-shadow: 0 8px 36px rgba(26,115,232,0.13);
+    border-color: rgba(26,115,232,0.28);
+    transform: translateY(-2px);
+  }
+
+  .post-header {
+    padding: 18px 20px 12px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+
+  .post-avatar {
+    width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 600; color: white;
+  }
+
+  .post-meta { flex: 1; min-width: 0; }
+
+  .post-author {
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+
+  .verified { color: var(--blue); font-size: 13px; }
+
+  .author-role {
+    font-size: 10px; font-weight: 500;
+    background: var(--blue-pale); color: var(--blue);
+    padding: 2px 8px; border-radius: 10px; letter-spacing: 0.05em;
+  }
+
+  .post-time {
+    font-size: 11px; color: var(--stone-light); margin-top: 2px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .post-location {
+    display: flex; align-items: center; gap: 3px;
+    color: var(--blue); font-size: 11px; font-weight: 500;
+  }
+
+  .post-more-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--stone-light); font-size: 18px; padding: 0 4px;
+    border-radius: 4px; transition: color 0.2s;
+  }
+
+  .post-more-btn:hover { color: var(--ink); }
+
+  .post-category-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 12px; margin-bottom: 8px;
+  }
+
+  .chip-pilgrimage { background: rgba(26,115,232,0.10); color: var(--blue-dark); }
+  .chip-temple     { background: var(--blue-pale);      color: var(--blue); }
+  .chip-festival   { background: rgba(13,115,119,0.10); color: var(--teal); }
+  .chip-travel     { background: rgba(75,120,180,0.10); color: #1B5CA8; }
+  .chip-spiritual  { background: rgba(80,100,200,0.10); color: #3050C8; }
+
+  .post-body { padding: 0 20px 14px; }
+
+  .post-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px; font-weight: 600; color: var(--ink);
+    margin-bottom: 8px; line-height: 1.3;
+  }
+
+  .post-text { font-size: 14px; color: var(--ink-soft); line-height: 1.65; }
+
+  .post-read-more {
+    color: var(--blue); font-weight: 500; cursor: pointer;
+    background: none; border: none; font-size: 13px;
+    font-family: 'Jost', sans-serif; padding: 0; margin-top: 6px; display: inline-block;
+  }
+
+  .post-image { margin: 0 20px 14px; border-radius: var(--r-md); overflow: hidden; position: relative; }
+
+  .post-image img { width: 100%; height: 220px; object-fit: cover; display: block; }
+
+  .post-image-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+    margin: 0 20px 14px; border-radius: var(--r-md); overflow: hidden;
+  }
+
+  .post-image-grid img { width: 100%; height: 140px; object-fit: cover; display: block; }
+
+  .image-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,25,49,0.5), transparent);
+    display: flex; align-items: flex-end; padding: 12px;
+  }
+
+  .image-tag {
+    background: rgba(26,115,232,0.90); color: white;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 10px; letter-spacing: 0.05em;
+  }
+
+  /* Temple rec chip */
+  .temple-rec-chip {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--blue-pale);
+    border: 1px solid rgba(26,115,232,0.20);
+    border-radius: var(--r-sm); padding: 10px 14px; margin: 0 20px 14px;
+  }
+
+  .temple-rec-icon { font-size: 22px; }
+  .temple-rec-info { flex: 1; }
+  .temple-rec-name  { font-size: 13px; font-weight: 600; color: var(--ink); display: block; }
+  .temple-rec-loc   { font-size: 11px; color: var(--stone); }
+  .temple-rec-rating { font-size: 12px; color: var(--blue); font-weight: 500; }
+
+  .post-tags { padding: 0 20px 14px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .post-tag {
+    background: var(--blue-pale); color: var(--blue);
+    font-size: 11px; font-weight: 500; padding: 3px 10px;
+    border-radius: 12px; cursor: pointer; transition: all 0.15s;
+  }
+
+  .post-tag:hover { background: var(--blue); color: white; }
+
+  .post-footer {
+    padding: 12px 20px; border-top: 1px solid var(--border-soft);
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .post-action {
+    display: flex; align-items: center; gap: 5px;
+    padding: 7px 12px; border-radius: 20px; border: none;
+    background: transparent; font-size: 13px;
+    font-family: 'Jost', sans-serif; font-weight: 400;
+    cursor: pointer; color: var(--stone); transition: all 0.18s;
+  }
+
+  .post-action:hover { background: var(--blue-pale); color: var(--blue); }
+
+  .post-action.liked { color: #E8621A; font-weight: 600; }
+  .post-action.liked:hover { background: rgba(232,98,26,0.08); }
+
+  .post-action .ic { font-size: 15px; }
+  .post-share { margin-left: auto; }
+
+  /* Forum */
+  .forum-section-title { display: flex; align-items: center; gap: 10px; padding: 4px 0 0; }
+
+  .forum-section-title h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600; color: var(--ink);
+  }
+
+  .section-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
+
+  .view-all-btn {
+    font-size: 12px; font-weight: 500; color: var(--blue);
+    background: none; border: none; cursor: pointer;
+    font-family: 'Jost', sans-serif; letter-spacing: 0.04em;
+  }
+
+  .forum-card {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-warm);
+  }
+
+  .forum-thread {
+    padding: 16px 20px; display: flex; gap: 14px; align-items: flex-start;
+    border-bottom: 1px solid var(--border-soft); cursor: pointer; transition: background 0.18s;
+  }
+
+  .forum-thread:last-child { border-bottom: none; }
+  .forum-thread:hover { background: var(--blue-pale); }
+
+  .thread-icon-wrap {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+
+  .thread-content { flex: 1; min-width: 0; }
+
+  .thread-title { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 4px; line-height: 1.35; }
+
+  .thread-meta { font-size: 11.5px; color: var(--stone-light); display: flex; align-items: center; gap: 10px; }
+
+  .thread-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+
+  .thread-replies {
+    font-size: 11px; font-weight: 600; color: var(--blue);
+    background: var(--blue-pale); padding: 2px 8px; border-radius: 10px;
+  }
+
+  .thread-hot { font-size: 10px; color: var(--stone-light); display: flex; align-items: center; gap: 3px; }
+
+  /* Events */
+  .events-card {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-warm);
+  }
+
+  .event-item {
+    display: flex; gap: 14px; padding: 14px 20px;
+    border-bottom: 1px solid var(--border-soft); cursor: pointer; transition: background 0.18s;
+  }
+
+  .event-item:last-child { border-bottom: none; }
+  .event-item:hover { background: var(--blue-pale); }
+
+  .event-date-box {
+    width: 46px; height: 46px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex-shrink: 0; box-shadow: 0 2px 8px rgba(26,115,232,0.30);
+  }
+
+  .event-date-box .day {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 600; color: white; line-height: 1;
+  }
+
+  .event-date-box .month {
+    font-size: 9px; font-weight: 600;
+    color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  .event-info { flex: 1; }
+  .event-name   { font-size: 13.5px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .event-detail { font-size: 11px; color: var(--stone-light); display: flex; align-items: center; gap: 6px; }
+  .event-attendees { font-size: 11px; color: var(--blue); font-weight: 500; white-space: nowrap; align-self: center; }
+
+  /* ── RIGHT SIDEBAR ── */
+  .sidebar-right { display: flex; flex-direction: column; gap: 16px; }
+
+  /* AI Assistant */
+  .ai-assistant-card {
+    background: linear-gradient(160deg, #0A1931 0%, #1B3A6B 100%);
+    border-radius: var(--r-lg); overflow: hidden;
+    box-shadow: 0 4px 24px rgba(26,115,232,0.25);
+    position: relative;
+  }
+
+  .ai-assistant-card::before {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 150px; height: 150px;
+    background: radial-gradient(circle, rgba(74,159,245,0.12) 0%, transparent 70%);
+  }
+
+  .ai-card-header {
+    padding: 18px 20px 14px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .ai-orb {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, rgba(74,159,245,0.35), rgba(26,115,232,0.20));
+    border: 1px solid rgba(74,159,245,0.45);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 0   rgba(74,159,245,0.35); }
+    50%      { box-shadow: 0 0 0 8px rgba(74,159,245,0); }
+  }
+
+  .ai-card-header h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; font-weight: 600; color: var(--blue-light);
+  }
+
+  .ai-card-header p { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+
+  .ai-chat-area { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+
+  .ai-msg {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(74,159,245,0.18);
+    border-radius: 12px 12px 12px 3px;
+    padding: 10px 14px; font-size: 13px;
+    color: rgba(255,255,255,0.80); line-height: 1.5;
+  }
+
+  .ai-suggestion {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(74,159,245,0.07);
+    border: 1px solid rgba(74,159,245,0.18);
+    border-radius: 10px; padding: 8px 12px;
+    cursor: pointer; transition: all 0.2s;
+  }
+
+  .ai-suggestion:hover { background: rgba(74,159,245,0.15); }
+  .ai-suggestion span  { font-size: 12px; color: rgba(255,255,255,0.65); flex: 1; }
+  .ai-suggestion .arrow { color: var(--blue-light); font-size: 11px; }
+
+  .ai-input-wrap { padding: 0 16px 14px; display: flex; gap: 8px; }
+
+  .ai-input {
+    flex: 1; background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; padding: 9px 14px;
+    font-size: 12.5px; font-family: 'Jost', sans-serif;
+    color: white; outline: none; transition: border-color 0.2s;
+  }
+
+  .ai-input::placeholder { color: rgba(255,255,255,0.30); }
+  .ai-input:focus { border-color: rgba(74,159,245,0.45); }
+
+  .ai-send-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 14px; transition: all 0.2s; flex-shrink: 0;
+  }
+
+  .ai-send-btn:hover { transform: scale(1.1); }
+
+  /* Top Pilgrims */
+  .pilgrim-list { padding: 8px 12px; }
+
+  .pilgrim-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px; border-radius: var(--r-sm);
+    cursor: pointer; transition: background 0.18s;
+  }
+
+  .pilgrim-item:hover { background: var(--blue-pale); }
+
+  .pilgrim-rank {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; color: var(--blue-light); width: 20px; text-align: center; font-weight: 300;
+  }
+
+  .pilgrim-av {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: white; flex-shrink: 0;
+  }
+
+  .pilgrim-info { flex: 1; min-width: 0; }
+  .pilgrim-name   { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .pilgrim-visits { font-size: 11px; color: var(--stone-light); }
+
+  .pilgrim-score {
+    font-size: 12px; font-weight: 600; color: var(--blue);
+    background: var(--blue-pale); padding: 3px 8px; border-radius: 10px;
+  }
+
+  /* Temple Spotlight */
+  .spotlight-card {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-warm);
+  }
+
+  .temple-spotlight {
+    position: relative; height: 120px;
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    display: flex; align-items: flex-end; padding: 14px; overflow: hidden;
+  }
+
+  .temple-spotlight::before {
+    content: attr(data-emoji);
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -65%);
+    font-size: 48px; opacity: 0.25;
+  }
+
+  .temple-spotlight-info { z-index: 1; }
+
+  .temple-spotlight-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px; font-weight: 600; color: white; display: block;
+  }
+
+  .temple-spotlight-loc { font-size: 11px; color: rgba(255,255,255,0.70); }
+
+  .spotlight-body { padding: 14px; }
+  .spotlight-body p { font-size: 12.5px; color: var(--ink-muted); line-height: 1.55; margin-bottom: 12px; }
+
+  .spotlight-stats-row { display: flex; gap: 12px; }
+
+  .sstat {
+    flex: 1; text-align: center; padding: 8px;
+    background: var(--surface-warm); border-radius: var(--r-sm); border: 1px solid var(--border-soft);
+  }
+
+  .sstat .n { font-size: 16px; font-weight: 600; color: var(--blue); font-family: 'Cormorant Garamond', serif; }
+  .sstat .l { font-size: 10px; color: var(--stone-light); }
+
+  .explore-btn {
+    display: block; width: 100%; margin-top: 12px; padding: 9px;
+    text-align: center; background: var(--blue-pale);
+    border: 1px solid rgba(26,115,232,0.22); border-radius: var(--r-sm);
+    font-size: 12px; font-weight: 500; color: var(--blue);
+    cursor: pointer; transition: all 0.2s; font-family: 'Jost', sans-serif;
+  }
+
+  .explore-btn:hover { background: var(--blue); color: white; }
+
+  /* Load More */
+  .load-more-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 14px; background: var(--surface);
+    border: 1.5px dashed var(--border); border-radius: var(--r-lg);
+    font-size: 13px; font-family: 'Jost', sans-serif; font-weight: 500;
+    color: var(--stone); cursor: pointer; transition: all 0.2s;
+  }
+
+  .load-more-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+
+  /* Mod Banner */
+  .mod-banner {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--blue-pale); border: 1px solid rgba(26,115,232,0.20);
+    border-radius: var(--r-md); padding: 10px 16px;
+    font-size: 12px; color: var(--blue-dark);
+  }
+
+  .mod-banner strong { font-weight: 600; }
+
+  /* Notification dot */
+  .notif-dot {
+    width: 8px; height: 8px;
+    background: var(--blue); border-radius: 50%;
+    display: inline-block; margin-left: 2px;
+    vertical-align: top; margin-top: 2px;
+    box-shadow: 0 0 0 2px rgba(26,115,232,0.25);
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+
+  /* Footer */
+  .community-footer {
+    background: var(--ink); margin-top: 48px;
+    padding: 32px; text-align: center;
+  }
+
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 500; color: var(--blue-light); margin-bottom: 6px;
+  }
+
+  .footer-mantra {
+    font-size: 13px; color: rgba(255,255,255,0.45);
+    font-family: 'Noto Serif Devanagari', serif;
+    letter-spacing: 0.05em; margin-bottom: 20px;
+  }
+
+  .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+
+  .footer-links a {
+    font-size: 12px; color: rgba(255,255,255,0.40);
+    text-decoration: none; transition: color 0.2s; letter-spacing: 0.05em;
+  }
+
+  .footer-links a:hover { color: var(--blue-light); }
+
+  .footer-copy { font-size: 11px; color: rgba(255,255,255,0.20); letter-spacing: 0.06em; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--stone-light); }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .main-container { grid-template-columns: 220px 1fr; }
+    .sidebar-right  { display: none; }
+  }
+
+  @media (max-width: 720px) {
+    .main-container { grid-template-columns: 1fr; padding: 16px; }
+    .sidebar-left   { display: none; }
+    .hero h1        { font-size: 30px; }
+    .hero-stats     { gap: 24px; }
+    .nav-links      { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar">
+  <a class="nav-brand" href="#">
+    <div class="brand-icon">🛕</div>
+    <div>
+      <span class="brand-text">TeerthLok</span>
+      <span class="brand-sub">Sacred Journeys · AI-Powered</span>
+    </div>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#">Discover</a></li>
+    <li><a href="#" class="active">Community</a></li>
+    <li><a href="#">Pilgrimages</a></li>
+    <li><a href="#">Temples</a></li>
+    <li><a href="#">Festivals</a></li>
+    <li><a href="#">Plan Journey</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <div class="search-wrap">
+      <span class="icon">🔍</span>
+      <input class="nav-search" type="text" placeholder="Search sacred places…">
+    </div>
+    <button class="btn-primary">+ Share Story</button>
+    <div class="nav-avatar">A</div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <span class="hero-diya">🪔</span>
+  <h1>Community <span>Tirtha</span></h1>
+  <p class="hero-sub">Where Pilgrims Connect · Share · Inspire</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="num">2.4L+</span>
+      <span class="label">Pilgrims</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="num">18K+</span>
+      <span class="label">Stories Shared</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="num">4,800+</span>
+      <span class="label">Sacred Sites</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="num">32</span>
+      <span class="label">States Covered</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main-container">
+
+  <!-- ── LEFT SIDEBAR ── -->
+  <aside class="sidebar-left">
+
+    <!-- User Profile -->
+    <div class="sidebar-card">
+      <div class="profile-card">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar">A</div>
+          <div class="profile-badge">✓</div>
+        </div>
+        <div class="profile-name">Arjun Sharma</div>
+        <div class="profile-title">🙏 Senior Pilgrim · Kashi Yatri</div>
+        <div class="profile-stats">
+          <div class="pstat"><span class="n">47</span><span class="l">Temples</span></div>
+          <div class="pstat"><span class="n">128</span><span class="l">Posts</span></div>
+          <div class="pstat"><span class="n">2.1K</span><span class="l">Karma</span></div>
+        </div>
+        <button class="btn-outline">View Full Profile →</button>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <div class="sidebar-card">
+      <div class="nav-menu">
+        <a class="nav-item active" href="#"><span class="ic">🏠</span> Community Feed</a>
+        <a class="nav-item" href="#"><span class="ic">💬</span> Discussions <span class="badge">24</span></a>
+        <a class="nav-item" href="#"><span class="ic">📖</span> My Journeys</a>
+        <a class="nav-item" href="#"><span class="ic">🛕</span> Temple Recs</a>
+        <a class="nav-item" href="#"><span class="ic">🎉</span> Festivals & Events</a>
+        <a class="nav-item" href="#"><span class="ic">🗺️</span> Pilgrim Routes</a>
+        <a class="nav-item" href="#"><span class="ic">🤖</span> AI Guide <span class="notif-dot"></span></a>
+        <a class="nav-item" href="#"><span class="ic">🔖</span> Saved Posts</a>
+        <a class="nav-item" href="#"><span class="ic">⚙️</span> Preferences</a>
+      </div>
+    </div>
+
+    <!-- Trending Topics -->
+    <div class="sidebar-card">
+      <div class="card-header">
+        <div class="card-header-icon icon-blue">🔥</div>
+        <h3>Trending Now</h3>
+      </div>
+      <div class="trending-list">
+        <div class="trending-item">
+          <span class="trending-num">1</span>
+          <div class="trending-text">
+            <span class="trending-tag">#CharDhamYatra2025</span>
+            <span class="trending-count">4,218 posts</span>
+          </div>
+          <span class="trending-arrow">↗</span>
+        </div>
+        <div class="trending-item">
+          <span class="trending-num">2</span>
+          <div class="trending-text">
+            <span class="trending-tag">#RamNavami</span>
+            <span class="trending-count">3,105 posts</span>
+          </div>
+          <span class="trending-arrow">↗</span>
+        </div>
+        <div class="trending-item">
+          <span class="trending-num">3</span>
+          <div class="trending-text">
+            <span class="trending-tag">#VaranasiDiaries</span>
+            <span class="trending-count">2,870 posts</span>
+          </div>
+          <span class="trending-arrow">↗</span>
+        </div>
+        <div class="trending-item">
+          <span class="trending-num">4</span>
+          <div class="trending-text">
+            <span class="trending-tag">#TirumalaExperience</span>
+            <span class="trending-count">1,924 posts</span>
+          </div>
+          <span class="trending-arrow">↗</span>
+        </div>
+        <div class="trending-item">
+          <span class="trending-num">5</span>
+          <div class="trending-text">
+            <span class="trending-tag">#HiddenTemples</span>
+            <span class="trending-count">1,482 posts</span>
+          </div>
+          <span class="trending-arrow">↗</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Moderation Banner -->
+    <div class="mod-banner">
+      🛡️ <span><strong>Safe Space:</strong> Our AI moderation ensures respectful, authentic spiritual discussions for all.</span>
+    </div>
+
+  </aside>
+
+  <!-- ── CENTER FEED ── -->
+  <main class="feed-area">
+
+    <!-- Category Tabs -->
+    <div class="category-tabs">
+      <button class="tab-btn active">🏠 All Stories</button>
+      <button class="tab-btn">🛕 Temple Visits</button>
+      <button class="tab-btn">🚶 Pilgrimages</button>
+      <button class="tab-btn">🎉 Festivals</button>
+      <button class="tab-btn">💬 Questions</button>
+      <button class="tab-btn">⭐ Temple Recs</button>
+      <button class="tab-btn">🗺️ Travel Tips</button>
+    </div>
+
+    <!-- Compose Box -->
+    <div class="compose-box">
+      <div class="compose-top">
+        <div class="compose-avatar">A</div>
+        <textarea class="compose-input" placeholder="Share your pilgrimage experience, a sacred moment, or a travel tip with the community…"></textarea>
+      </div>
+      <div class="compose-actions">
+        <button class="compose-action-btn">📷 Photo</button>
+        <button class="compose-action-btn">📍 Temple</button>
+        <button class="compose-action-btn">🛣️ Route</button>
+        <button class="compose-action-btn">🎉 Festival</button>
+        <button class="btn-primary compose-submit">Share with Community 🙏</button>
+      </div>
+    </div>
+
+    <!-- AI Banner -->
+    <div class="ai-banner">
+      <div class="ai-icon-wrap">🤖</div>
+      <div class="ai-text">
+        <h4>Dharma AI — Your Spiritual Guide</h4>
+        <p>Summarising 847 new posts from your followed temples and pilgrimage routes. Ask me anything about rituals, routes or traditions.</p>
+      </div>
+      <button class="ai-btn">Ask Dharma AI →</button>
+    </div>
+
+    <!-- ─── POST 1 ─── -->
+    <div class="post-card">
+      <div class="post-header">
+        <div class="post-avatar" style="background: linear-gradient(135deg, #1A73E8, #4A9FF5);">P</div>
+        <div class="post-meta">
+          <div class="post-author">
+            Priya Nair <span class="verified">✦</span>
+            <span class="author-role">Char Dham Yatri</span>
+          </div>
+          <div class="post-time">
+            <span>2 hours ago</span>
+            <span>·</span>
+            <span class="post-location">📍 Kedarnath, Uttarakhand</span>
+          </div>
+        </div>
+        <button class="post-more-btn">⋯</button>
+      </div>
+      <div class="post-body">
+        <span class="post-category-chip chip-pilgrimage">🚶 Pilgrimage Journal</span>
+        <div class="post-title">Finally completed the Char Dham Yatra — a journey that changed me forever</div>
+        <div class="post-text">
+          After 18 days of walking, praying, and crying with joy, I have completed what I believe is the most transformative journey of my life. From Yamunotri to Kedarnath, the mountains don't just test your body — they purify your soul. The moment I saw the Jyotirlinga at Kedarnath, surrounded by snow-capped peaks, time simply stopped…
+        </div>
+        <button class="post-read-more">Read full story →</button>
+      </div>
+      <div class="post-image" style="margin: 0 20px 14px;">
+        <div style="background: linear-gradient(135deg, #0A1931 0%, #1B3A6B 40%, #1A73E8 100%); height: 220px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 80px; position: relative; overflow: hidden;">
+          🏔️
+          <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,25,49,0.6), transparent); display: flex; align-items: flex-end; padding: 14px;">
+            <span class="image-tag">📸 Kedarnath Temple · Dawn</span>
+          </div>
+        </div>
+      </div>
+      <div class="post-tags">
+        <span class="post-tag">#CharDham</span>
+        <span class="post-tag">#Kedarnath</span>
+        <span class="post-tag">#Uttarakhand</span>
+        <span class="post-tag">#JyotirlingaYatra</span>
+        <span class="post-tag">#SpiritualJourney</span>
+      </div>
+      <div class="post-footer">
+        <button class="post-action liked"><span class="ic">❤️</span> 1,284</button>
+        <button class="post-action"><span class="ic">💬</span> 94 Comments</button>
+        <button class="post-action"><span class="ic">🔖</span> Save</button>
+        <button class="post-action post-share"><span class="ic">↗</span> Share</button>
+      </div>
+    </div>
+
+    <!-- ─── POST 2 ─── -->
+    <div class="post-card">
+      <div class="post-header">
+        <div class="post-avatar" style="background: linear-gradient(135deg, #0D7377, #14A085);">R</div>
+        <div class="post-meta">
+          <div class="post-author">
+            Rajan Krishnamurthy <span class="verified">✦</span>
+            <span class="author-role">Temple Expert</span>
+          </div>
+          <div class="post-time">
+            <span>5 hours ago</span>
+            <span>·</span>
+            <span class="post-location">📍 Madurai, Tamil Nadu</span>
+          </div>
+        </div>
+        <button class="post-more-btn">⋯</button>
+      </div>
+      <div class="post-body">
+        <span class="post-category-chip chip-temple">🛕 Temple Discovery</span>
+        <div class="post-title">Hidden Gem: Koodal Azhagar Temple — Madurai's lesser-known Vishnu shrine</div>
+        <div class="post-text">
+          While everyone flocks to Meenakshi Amman, I discovered Koodal Azhagar Temple just 2km away. The three-storey Rajagopuram is stunning, and you'll find almost no tourist crowds. The Vaikunta Ekadashi celebration here is extraordinary — the deity descends through three stories symbolising the three worlds…
+        </div>
+        <button class="post-read-more">Read full story →</button>
+      </div>
+      <div class="temple-rec-chip">
+        <span class="temple-rec-icon">🛕</span>
+        <div class="temple-rec-info">
+          <span class="temple-rec-name">Koodal Azhagar Temple</span>
+          <span class="temple-rec-loc">📍 Madurai, Tamil Nadu · Open 6am–12pm, 4pm–9pm</span>
+        </div>
+        <span class="temple-rec-rating">⭐ 4.9 · 820 reviews</span>
+      </div>
+      <div class="post-tags">
+        <span class="post-tag">#HiddenTemples</span>
+        <span class="post-tag">#TamilNadu</span>
+        <span class="post-tag">#Madurai</span>
+        <span class="post-tag">#VaishnavaTemples</span>
+      </div>
+      <div class="post-footer">
+        <button class="post-action"><span class="ic">❤️</span> 892</button>
+        <button class="post-action"><span class="ic">💬</span> 47 Comments</button>
+        <button class="post-action"><span class="ic">🔖</span> Save</button>
+        <button class="post-action post-share"><span class="ic">↗</span> Share</button>
+      </div>
+    </div>
+
+    <!-- ─── POST 3 ─── -->
+    <div class="post-card">
+      <div class="post-header">
+        <div class="post-avatar" style="background: linear-gradient(135deg, #1557B0, #3080D8);">M</div>
+        <div class="post-meta">
+          <div class="post-author">
+            Meera Agarwal
+            <span class="author-role">Travel Planner</span>
+          </div>
+          <div class="post-time">
+            <span>Yesterday</span>
+            <span>·</span>
+            <span class="post-location">📍 Varanasi, UP</span>
+          </div>
+        </div>
+        <button class="post-more-btn">⋯</button>
+      </div>
+      <div class="post-body">
+        <span class="post-category-chip chip-travel">🗺️ Travel Tips</span>
+        <div class="post-title">Complete Varanasi Ghats Guide — 84 Ghats, what to see, when and how</div>
+        <div class="post-text">
+          After my 4th visit to Kashi, I've put together the most comprehensive guide you'll find anywhere. Dashashwamedh Ghat is just the beginning — the real magic is at Manikarnika before dawn, or Assi Ghat during Kartik Purnima. Here's my top 15 ghats with best visit times and hidden rituals to witness…
+        </div>
+        <button class="post-read-more">Read full guide →</button>
+      </div>
+      <div class="post-image-grid">
+        <div style="background: linear-gradient(135deg, #1A73E8, #64B5F6); height: 140px; display: flex; align-items: center; justify-content: center; font-size: 50px;">🌅</div>
+        <div style="background: linear-gradient(135deg, #0A1931, #1B3A6B); height: 140px; display: flex; align-items: center; justify-content: center; font-size: 50px;">🛶</div>
+      </div>
+      <div class="post-tags">
+        <span class="post-tag">#VaranasiDiaries</span>
+        <span class="post-tag">#Kashi</span>
+        <span class="post-tag">#GangaAarti</span>
+        <span class="post-tag">#TravelTips</span>
+        <span class="post-tag">#Ghats</span>
+      </div>
+      <div class="post-footer">
+        <button class="post-action"><span class="ic">❤️</span> 2,104</button>
+        <button class="post-action"><span class="ic">💬</span> 186 Comments</button>
+        <button class="post-action"><span class="ic">🔖</span> Save</button>
+        <button class="post-action post-share"><span class="ic">↗</span> Share</button>
+      </div>
+    </div>
+
+    <!-- ─── FORUM THREADS ─── -->
+    <div class="forum-section-title">
+      <h2>🗣️ Hot Discussions</h2>
+      <div class="section-line"></div>
+      <button class="view-all-btn">View All Forums →</button>
+    </div>
+
+    <div class="forum-card">
+      <div class="forum-thread">
+        <div class="thread-icon-wrap" style="background: var(--blue-pale);">🛕</div>
+        <div class="thread-content">
+          <div class="thread-title">What is the best month to visit Amarnath — avoiding the extreme rush?</div>
+          <div class="thread-meta"><span>by SureshKumar_Delhi</span><span>·</span><span>Pilgrimage Routes</span></div>
+        </div>
+        <div class="thread-stats">
+          <span class="thread-replies">142 replies</span>
+          <span class="thread-hot">🔥 Hot</span>
+        </div>
+      </div>
+      <div class="forum-thread">
+        <div class="thread-icon-wrap" style="background: rgba(13,115,119,0.10);">🙏</div>
+        <div class="thread-content">
+          <div class="thread-title">Significance of Pradakshina (circumambulation) — clockwise vs anticlockwise in different traditions</div>
+          <div class="thread-meta"><span>by PanditVidyasagar</span><span>·</span><span>Spiritual Learning</span></div>
+        </div>
+        <div class="thread-stats">
+          <span class="thread-replies">98 replies</span>
+          <span class="thread-hot">📚 Popular</span>
+        </div>
+      </div>
+      <div class="forum-thread">
+        <div class="thread-icon-wrap" style="background: rgba(26,115,232,0.08);">🏨</div>
+        <div class="thread-content">
+          <div class="thread-title">Dharamshala vs guesthouses near Tirupati — honest review of affordable options in 2025</div>
+          <div class="thread-meta"><span>by TravellerVijay</span><span>·</span><span>Travel Planning</span></div>
+        </div>
+        <div class="thread-stats">
+          <span class="thread-replies">76 replies</span>
+          <span class="thread-hot">💡 Useful</span>
+        </div>
+      </div>
+      <div class="forum-thread">
+        <div class="thread-icon-wrap" style="background: rgba(26,115,232,0.08);">🎺</div>
+        <div class="thread-content">
+          <div class="thread-title">Navratri 2025 — Which cities have the most authentic celebrations? Comparison thread</div>
+          <div class="thread-meta"><span>by FestivalLover_Anita</span><span>·</span><span>Festivals & Celebrations</span></div>
+        </div>
+        <div class="thread-stats">
+          <span class="thread-replies">215 replies</span>
+          <span class="thread-hot">🔥 Trending</span>
+        </div>
+      </div>
+      <div class="forum-thread">
+        <div class="thread-icon-wrap" style="background: rgba(21,87,176,0.08);">❓</div>
+        <div class="thread-content">
+          <div class="thread-title">First-time solo female pilgrim doing Vaishno Devi — safety tips and must-know advice?</div>
+          <div class="thread-meta"><span>by Kavya_Bangalore</span><span>·</span><span>Safety & Travel</span></div>
+        </div>
+        <div class="thread-stats">
+          <span class="thread-replies">183 replies</span>
+          <span class="thread-hot">❤️ Helpful</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── EVENTS ─── -->
+    <div class="forum-section-title">
+      <h2>🎉 Upcoming Festivals & Events</h2>
+      <div class="section-line"></div>
+      <button class="view-all-btn">See Calendar →</button>
+    </div>
+
+    <div class="events-card">
+      <div class="event-item">
+        <div class="event-date-box"><span class="day">14</span><span class="month">Mar</span></div>
+        <div class="event-info">
+          <div class="event-name">🌸 Holi Celebration — Mathura & Vrindavan</div>
+          <div class="event-detail"><span>📍 Uttar Pradesh</span><span>·</span><span>3 days of festivities</span><span>·</span><span>Lathmar Holi at Barsana</span></div>
+        </div>
+        <span class="event-attendees">🙋 12,400 interested</span>
+      </div>
+      <div class="event-item">
+        <div class="event-date-box"><span class="day">30</span><span class="month">Mar</span></div>
+        <div class="event-info">
+          <div class="event-name">🕌 Ram Navami Mahotsav — Ayodhya</div>
+          <div class="event-detail"><span>📍 Ayodhya, UP</span><span>·</span><span>Ram Janmabhoomi special darshan</span></div>
+        </div>
+        <span class="event-attendees">🙋 28,700 interested</span>
+      </div>
+      <div class="event-item">
+        <div class="event-date-box"><span class="day">08</span><span class="month">Apr</span></div>
+        <div class="event-info">
+          <div class="event-name">⛰️ Kedarnath Temple Opens — Summer Season</div>
+          <div class="event-detail"><span>📍 Rudraprayag, Uttarakhand</span><span>·</span><span>Register for Char Dham Yatra</span></div>
+        </div>
+        <span class="event-attendees">🙋 41,200 interested</span>
+      </div>
+      <div class="event-item">
+        <div class="event-date-box"><span class="day">22</span><span class="month">Apr</span></div>
+        <div class="event-info">
+          <div class="event-name">🌺 Akshaya Tritiya Special Puja — Kanchipuram</div>
+          <div class="event-detail"><span>📍 Kanchipuram, Tamil Nadu</span><span>·</span><span>Gold chariot procession</span></div>
+        </div>
+        <span class="event-attendees">🙋 8,900 interested</span>
+      </div>
+    </div>
+
+    <button class="load-more-btn">💙 Load More Sacred Stories</button>
+
+  </main>
+
+  <!-- ── RIGHT SIDEBAR ── -->
+  <aside class="sidebar-right">
+
+    <!-- AI Assistant -->
+    <div class="ai-assistant-card">
+      <div class="ai-card-header">
+        <div class="ai-orb">🤖</div>
+        <div>
+          <h4>Dharma AI Assistant</h4>
+          <p>Your AI spiritual companion</p>
+        </div>
+      </div>
+      <div class="ai-chat-area">
+        <div class="ai-msg">
+          🙏 Namaste! I've summarised today's community activity. There are <strong style="color:var(--blue-light);">47 new discussions</strong> about Char Dham, 12 temple recommendations added from South India, and a helpful thread about Vaishno Devi safety tips trending right now.
+        </div>
+        <div class="ai-suggestion"><span>🛕 Find temples near Varanasi open today</span><span class="arrow">→</span></div>
+        <div class="ai-suggestion"><span>🗺️ Suggest a 7-day Rajasthan pilgrimage route</span><span class="arrow">→</span></div>
+        <div class="ai-suggestion"><span>📜 Explain the significance of Kumbh Mela</span><span class="arrow">→</span></div>
+        <div class="ai-suggestion"><span>🎉 What festivals happen in April 2025?</span><span class="arrow">→</span></div>
+      </div>
+      <div class="ai-input-wrap">
+        <input class="ai-input" type="text" placeholder="Ask about temples, routes, rituals…">
+        <button class="ai-send-btn">↑</button>
+      </div>
+    </div>
+
+    <!-- Top Pilgrims -->
+    <div class="sidebar-card">
+      <div class="card-header">
+        <div class="card-header-icon icon-blue">🏆</div>
+        <h3>Top Pilgrims This Month</h3>
+      </div>
+      <div class="pilgrim-list">
+        <div class="pilgrim-item">
+          <span class="pilgrim-rank">1</span>
+          <div class="pilgrim-av" style="background: linear-gradient(135deg, #1A73E8, #4A9FF5);">P</div>
+          <div class="pilgrim-info">
+            <div class="pilgrim-name">Priya Nair</div>
+            <div class="pilgrim-visits">🛕 47 temples · 12 routes</div>
+          </div>
+          <span class="pilgrim-score">4,820 pts</span>
+        </div>
+        <div class="pilgrim-item">
+          <span class="pilgrim-rank">2</span>
+          <div class="pilgrim-av" style="background: linear-gradient(135deg, #0D7377, #14A085);">R</div>
+          <div class="pilgrim-info">
+            <div class="pilgrim-name">Rajan K.</div>
+            <div class="pilgrim-visits">🛕 82 temples · 8 routes</div>
+          </div>
+          <span class="pilgrim-score">4,210 pts</span>
+        </div>
+        <div class="pilgrim-item">
+          <span class="pilgrim-rank">3</span>
+          <div class="pilgrim-av" style="background: linear-gradient(135deg, #1557B0, #3080D8);">S</div>
+          <div class="pilgrim-info">
+            <div class="pilgrim-name">Suresh D.</div>
+            <div class="pilgrim-visits">🛕 63 temples · 9 routes</div>
+          </div>
+          <span class="pilgrim-score">3,960 pts</span>
+        </div>
+        <div class="pilgrim-item">
+          <span class="pilgrim-rank">4</span>
+          <div class="pilgrim-av" style="background: linear-gradient(135deg, #0A1931, #1B3A6B);">A</div>
+          <div class="pilgrim-info">
+            <div class="pilgrim-name">Arjun S.</div>
+            <div class="pilgrim-visits">🛕 47 temples · 5 routes</div>
+          </div>
+          <span class="pilgrim-score">2,100 pts</span>
+        </div>
+        <div class="pilgrim-item">
+          <span class="pilgrim-rank">5</span>
+          <div class="pilgrim-av" style="background: linear-gradient(135deg, #1C5080, #3080B8);">M</div>
+          <div class="pilgrim-info">
+            <div class="pilgrim-name">Meera A.</div>
+            <div class="pilgrim-visits">🛕 34 temples · 7 routes</div>
+          </div>
+          <span class="pilgrim-score">1,840 pts</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Temple Spotlight -->
+    <div class="spotlight-card">
+      <div class="card-header">
+        <div class="card-header-icon icon-navy">✨</div>
+        <h3>Temple Spotlight</h3>
+      </div>
+      <div class="temple-spotlight" data-emoji="🛕">
+        <div class="temple-spotlight-info">
+          <span class="temple-spotlight-name">Brihadeeswarar Temple</span>
+          <span class="temple-spotlight-loc">📍 Thanjavur, Tamil Nadu</span>
+        </div>
+      </div>
+      <div class="spotlight-body">
+        <p>A UNESCO World Heritage marvel built by Raja Raja Chola I. The 66-metre vimana casts no shadow at noon — an architectural wonder over 1,000 years old. Community members rate this among the top 3 most spiritually transformative temples in India.</p>
+        <div class="spotlight-stats-row">
+          <div class="sstat"><div class="n">4.9</div><div class="l">⭐ Rating</div></div>
+          <div class="sstat"><div class="n">2.8K</div><div class="l">Reviews</div></div>
+          <div class="sstat"><div class="n">12K</div><div class="l">Visited</div></div>
+        </div>
+        <button class="explore-btn">Explore Temple Details →</button>
+      </div>
+    </div>
+
+    <!-- Community Guidelines -->
+    <div style="background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--r-lg);padding:16px 18px;box-shadow:var(--shadow-warm);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span>🛡️</span>
+        <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-muted);">Community Guidelines</span>
+      </div>
+      <p style="font-size:12px;color:var(--stone);line-height:1.6;margin-bottom:12px;">Our community is built on respect, authenticity, and spiritual brotherhood. AI-powered moderation keeps all discussions peaceful and informative.</p>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-muted);">✅ Be respectful of all faiths & traditions</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-muted);">✅ Share authentic personal experiences</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-muted);">✅ Help fellow pilgrims with accurate info</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-muted);">🚫 No misinformation or spam</div>
+      </div>
+      <button style="display:block;width:100%;margin-top:12px;padding:8px;background:none;border:1px solid var(--border);border-radius:20px;font-size:12px;font-family:'Jost',sans-serif;color:var(--stone);cursor:pointer;transition:all 0.2s;"
+        onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--stone)'">
+        🚩 Report a Post
+      </button>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer class="community-footer">
+  <div class="footer-brand">🛕 TeerthLok</div>
+  <div class="footer-mantra">सर्वे भवन्तु सुखिनः · May all be happy on their sacred journeys</div>
+  <div class="footer-links">
+    <a href="#">About TeerthLok</a>
+    <a href="#">Temple Directory</a>
+    <a href="#">Pilgrimage Routes</a>
+    <a href="#">AI Features</a>
+    <a href="#">Community Guidelines</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 TeerthLok · National-Level Spiritual Tourism Platform · Built for Bharat 🇮🇳</div>
+</footer>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Nav item switching
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  // Like toggle
+  document.querySelectorAll('.post-action').forEach(btn => {
+    if (btn.querySelector('.ic')?.textContent === '❤️') {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('liked');
+        const ic = btn.querySelector('.ic');
+        ic.style.transform = 'scale(1.3)';
+        setTimeout(() => ic.style.transform = '', 200);
+      });
+    }
+  });
+
+  // AI suggestion click
+  document.querySelectorAll('.ai-suggestion').forEach(s => {
+    s.addEventListener('click', () => {
+      document.querySelector('.ai-input').value = s.querySelector('span').textContent;
+      document.querySelector('.ai-input').focus();
+    });
+  });
+
+  // Compose submit
+  document.querySelector('.compose-submit').addEventListener('click', () => {
+    const textarea = document.querySelector('.compose-input');
+    if (textarea.value.trim()) {
+      textarea.value = '';
+      const btn = document.querySelector('.compose-submit');
+      btn.textContent = '✓ Posted! 🙏';
+      btn.style.background = 'linear-gradient(135deg, #0D7377, #14A085)';
+      setTimeout(() => {
+        btn.textContent = 'Share with Community 🙏';
+        btn.style.background = '';
+      }, 2000);
+    }
+  });
+
+  // Post animations
+  document.querySelectorAll('.post-card').forEach((card, i) => {
+    card.style.animationDelay = `${i * 0.07}s`;
+  });
+
+  // AI send
+  document.querySelector('.ai-send-btn').addEventListener('click', () => {
+    const input = document.querySelector('.ai-input');
+    if (input.value.trim()) {
+      input.value = '';
+      input.placeholder = '🤔 Dharma AI is thinking…';
+      setTimeout(() => { input.placeholder = 'Ask about temples, routes, rituals…'; }, 1800);
+    }
+  });
+
+  document.querySelector('.ai-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.querySelector('.ai-send-btn').click();
+  });
+</script>
+</body>
+</html>
